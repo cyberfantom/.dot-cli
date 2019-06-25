@@ -22,7 +22,7 @@ set enc=utf-8
 syntax on
 set cursorline
 set number
-set notermguicolors
+silent! set notermguicolors
 set background=dark
 set mouse-=a
 
