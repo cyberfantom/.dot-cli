@@ -10,4 +10,4 @@ vim -c ":PluginInstall" -c ":bdelete" -c ":q!"
 rm -rf ~/.tmux
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 ln -sf "$(pwd)/$(dirname $0)/.tmux.conf" ~/.tmux.conf
-~/.tmux/plugins/tpm/scripts/install_plugins.sh
+tmux source ~/.tmux.conf && ~/.tmux/plugins/tpm/scripts/install_plugins.sh
