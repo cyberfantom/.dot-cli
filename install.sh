@@ -55,8 +55,8 @@ cp -R ${POWERLINE_PATH}/config_files/* ~/.config/powerline/
 cp -R ${SCRIPT_PATH}/powerline/* ~/.config/powerline/
 
 # Reload daemons and configs
+source ~/.bashrc
 powerline-daemon --kill
 `which tmux` kill-server
-source ~/.bashrc
 
 exit 0
