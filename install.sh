@@ -12,16 +12,20 @@ function update_file() {
     fi
 }
 
-# Clean previous Vim installation and install Vundle
+# Clean previous Vim installation and install Vundle + Vim-plug
 rm -rf ~/.vim
 git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 ln -sf "${SCRIPT_PATH}/.vimrc" ~/.vimrc
 vim -c ":PluginInstall" -c ":bdelete" -c ":q!"
+vim -c ":PlugInstall" -c ":bdelete" -c ":q!"
 
 # Clean previous Tmux installation and install TPM
 rm -rf ~/.tmux
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 ln -sf "${SCRIPT_PATH}/.tmux.conf" ~/.tmux.conf
+ln -sf "${SCRIPT_PATH}/.tmux.remote.conf" ~/.tmux/.tmux.remote.conf
 `which tmux` source ~/.tmux.conf && ~/.tmux/plugins/tpm/scripts/install_plugins.sh
 
 # Path and Term environment
@@ -54,9 +58,12 @@ mkdir -p ~/.config/powerline
 cp -R ${POWERLINE_PATH}/config_files/* ~/.config/powerline/
 cp -R ${SCRIPT_PATH}/powerline/* ~/.config/powerline/
 
+# Misc
+update_file 'alias mc="mc -S xoria256.ini"' ~/.bashrc
+
 # Reload daemons and configs
-source ~/.bashrc
-powerline-daemon --kill
+$HOME/.local/bin/powerline-daemon --kill
 `which tmux` kill-server
+source ~/.bashrc
 
 exit 0
