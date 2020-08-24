@@ -15,6 +15,7 @@ Plugin 'tpope/vim-surround'
 Plugin 'sheerun/vim-polyglot'
 Plugin 'tmux-plugins/vim-tmux-focus-events'
 Plugin 'morhetz/gruvbox'
+Plugin 'Yggdroot/indentLine'
 
 call vundle#end()
 filetype plugin indent on
@@ -63,6 +64,15 @@ set smartindent
 set t_Co=256
 set t_ut=
 silent! colorscheme gruvbox
+
+" Indent Line
+let g:indentLine_char = '│' " ASCII 179
+map <C-i> :IndentLinesToggle<CR>
+
+" Hidden symbols
+set showbreak=↪\
+set listchars=tab:→\ ,eol:↲,nbsp:␣,trail:•,extends:⟩,precedes:⟨
+map <C-h> :set list!<CR>
 
 " Nerd Tree
 autocmd vimenter * NERDTree

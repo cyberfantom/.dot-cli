@@ -50,7 +50,9 @@ Keys | Result
 ---|---
 **F3** | Vertical terminal
 **F4** | Horizontal terminal
-
+**Ctrl+n** | Toggle NerdTree
+**Ctrl+i** in command mode | Toggle indent lines
+**Ctrl+h** in command mode | Toggle hidden symbols
 
 #### Tmux
 
