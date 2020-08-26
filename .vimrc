@@ -16,6 +16,7 @@ Plugin 'sheerun/vim-polyglot'
 Plugin 'tmux-plugins/vim-tmux-focus-events'
 Plugin 'morhetz/gruvbox'
 Plugin 'Yggdroot/indentLine'
+Plugin 'ctrlpvim/ctrlp.vim'
 
 call vundle#end()
 filetype plugin indent on
@@ -68,6 +69,12 @@ silent! colorscheme gruvbox
 " Indent Line
 let g:indentLine_char = '│' " ASCII 179
 map <C-i> :IndentLinesToggle<CR>
+
+" CtrlP
+let g:ctrlp_custom_ignore = {
+  \ 'dir':  '\v[\/]\.(git|hg|svn)$',
+  \ 'file': '\v\.(exe|so|dll)$',
+  \ }
 
 " Hidden symbols
 set showbreak=↪\
