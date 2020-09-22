@@ -60,12 +60,12 @@ Keys | Result
 **Ctrl+m** **,** in normal mode | Set split sizes equal
 **cp** in visual mode | Copy to system buffer
 **cv** in any mode | Paste from system buffer
-**<leader>q** in normal mode | Quick quit
-**<leader>q1** in normal mode | Quick quit without saving
-**<leader>qa** in normal mode | Quit all without saving
-**<leader>w** in normal mode | Quick save
-**<leader>g** in normal mode | Launch Tig git manager
-**<leader>m** | Preview markdown file in split
+**leader-q** in normal mode | Quick quit
+**leader-q1** in normal mode | Quick quit without saving
+**leader-qa** in normal mode | Quit all without saving
+**leader-w** in normal mode | Quick save
+**leader-g** in normal mode | Launch Tig git manager
+**leader-m** | Preview markdown file in split
 
 #### Tmux
 
