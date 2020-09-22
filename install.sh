@@ -33,7 +33,7 @@ update_file 'export PATH=$PATH:$HOME/.local/bin' ~/.bashrc
 update_file 'export TERM=xterm-256color' ~/.bashrc
 
 # Install powerline
-pip3 install --user powerline-status
+pip3 install --user powerline-status mdv
 PY3_LOCAL_VER=`python3 -c 'import sys; print(str(sys.version_info[0])+"."+str(sys.version_info[1]))'`
 POWERLINE_PATH="~/.local/lib/python${PY3_LOCAL_VER}/site-packages/powerline"
 

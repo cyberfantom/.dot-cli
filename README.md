@@ -18,12 +18,12 @@ Also note, that installation script only deploing configuration. You should inst
 $ sudo yum install epel-release
 # check for the latest available python version
 $ sudo yum install python34-pip
-$ sudo yum install vim tmux git xsel
+$ sudo yum install vim tmux git xsel tig
 ```
 
 **Example packages installation for deb-based distros**
 ```bash
-$ sudo apt install vim tmux git python3-pip xsel
+$ sudo apt install vim tmux git python3-pip xsel tig
 ```
 
 **Run installer**
@@ -46,14 +46,26 @@ Use as usual. Change as you want.
 Just a normal VIM with a few improvements and plugins.
 
 **Extra Keys**
+
 Keys | Result
 ---|---
-**F3** | Vertical terminal
-**F4** | Horizontal terminal
+**F2** | Vertical terminal
+**F3** | Horizontal terminal
 **Ctrl+n** | Toggle NerdTree
 **Ctrl+p** | Toggle CtrlP
-**Ctrl+i** in command mode | Toggle indent lines
-**Ctrl+h** in command mode | Toggle hidden symbols
+**Ctrl+i** in normal mode | Toggle indent lines
+**Ctrl+h** in normal mode | Toggle hidden symbols
+**Ctrl+Arrows** in normal mode | Resize splits
+**Ctrl+m** or **Enter** in normal mode | Maximize split
+**Ctrl+m** **,** in normal mode | Set split sizes equal
+**cp** in visual mode | Copy to system buffer
+**cv** in any mode | Paste from system buffer
+**<leader>q** in normal mode | Quick quit
+**<leader>q1** in normal mode | Quick quit without saving
+**<leader>qa** in normal mode | Quit all without saving
+**<leader>w** in normal mode | Quick save
+**<leader>g** in normal mode | Launch Tig git manager
+**<leader>m** | Preview markdown file in split
 
 #### Tmux
 
