@@ -61,9 +61,6 @@ set noerrorbells
 set novisualbell
 set t_vb=
 set tm=500
-" Keyboard fast
-set ttyfast
-set timeout timeoutlen=1000 ttimeoutlen=50
 "" Remove trailing whitespaces
 autocmd BufWritePre * :%s/\s\+$//e
 "" Optional custom variables

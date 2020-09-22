@@ -69,7 +69,7 @@ Keys | Result
 
 #### Tmux
 
-Nested sessions - this config allows you to run remote Tmux session in the local one with switching local/remote keymap by keys **prefix** + **\\**.
+Nested sessions - this config allows you to run remote Tmux session in the local one with switching local/remote keymap by keys **Ctrl** + **Space**.
 
 **Extra Keys**
 
@@ -77,7 +77,7 @@ Default prefix **Ctrl + b**.
 
 Keys | Result
 ---|---
-**prefix** + **\\** | Toggle on/off all keybindings for local or remote session
+**Ctrl** + **Space** | Toggle on/off all keybindings for local or remote session
 **v** in copy mode | Vim-style text selection
 **y** in copy mode | Vim-style selected text copy to buffers (Tmux + system)
 **prefix** + **r** | Reload Tmux config
