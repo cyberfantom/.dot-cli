@@ -116,9 +116,9 @@ let g:ctrlp_custom_ignore = {
 " Hidden symbols
 function! ConcealLevelToggle()
     if &conceallevel
-        set conceallevel=0
+        setlocal conceallevel=0
     else
-        set conceallevel=2
+        setlocal conceallevel=2
     endif
 endfunction
 set showbreak=↪\
