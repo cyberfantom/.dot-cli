@@ -99,6 +99,13 @@ silent! colorscheme gruvbox
 " Indent Line
 let g:indentLine_char = '│' " ASCII 179
 map <silent> <C-i> :IndentLinesToggle<CR>
+let g:indentLine_setConceal = 2
+" default ''.
+" n for Normal mode
+" v for Visual mode
+" i for Insert mode
+" c for Command line editing, for 'incsearch'
+let g:indentLine_concealcursor = ""
 
 " CtrlP
 let g:ctrlp_custom_ignore = {
@@ -107,9 +114,16 @@ let g:ctrlp_custom_ignore = {
   \ }
 
 " Hidden symbols
+function! ConcealLevelToggle()
+    if &conceallevel
+        set conceallevel=0
+    else
+        set conceallevel=2
+    endif
+endfunction
 set showbreak=↪\
 set listchars=tab:→\ ,eol:↲,nbsp:␣,trail:•,extends:⟩,precedes:⟨
-map <silent> <C-h> :set list!<CR>
+map <silent> <C-h> :set list!<CR> \| :call ConcealLevelToggle()<CR>
 
 " Dev icons
 let g:webdevicons_enable = 1
