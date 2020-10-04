@@ -106,6 +106,8 @@ let g:indentLine_setConceal = 2
 " i for Insert mode
 " c for Command line editing, for 'incsearch'
 let g:indentLine_concealcursor = ""
+" disable indent lines in nerdtree
+let g:indentLine_fileTypeExclude = ["nerdtree"]
 
 " CtrlP
 let g:ctrlp_custom_ignore = {
