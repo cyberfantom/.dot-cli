@@ -80,6 +80,10 @@ nnoremap <silent> <C-m> <C-w>\|<C-w>_
 "" Restore splits and fix NERDTree sizing bug.
 nnoremap <silent> <C-m>, :NERDTreeFocus<CR> \| :execute ':vertical resize' . nerdtree_size<CR> \| <C-w>= \| :NERDTreeRefreshRoot<CR> \| <C-w>p "
 
+" Add new line(s) in normal mode
+nnoremap <silent> n :<C-u>call append(line("."),   repeat([""], v:count1))<CR>
+nnoremap <silent> N :<C-u>call append(line(".")-1, repeat([""], v:count1))<CR>
+
 " Tabs
 set tabstop=4
 set shiftwidth=4

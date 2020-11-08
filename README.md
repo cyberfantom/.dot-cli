@@ -58,6 +58,7 @@ Keys | Result
 **Ctrl+Arrows** in normal mode | Resize splits
 **Ctrl+m** or **Enter** in normal mode | Maximize split
 **Ctrl+m** **,** in normal mode | Set split sizes equal
+[**number**] + **n** / **N** in normal mode | Insert blank line below/above cursor
 **cp** in visual mode | Copy to system buffer
 **cv** in any mode | Paste from system buffer
 **leader-q** in normal mode | Quick quit
