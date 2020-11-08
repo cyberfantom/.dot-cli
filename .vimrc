@@ -84,6 +84,13 @@ nnoremap <silent> <C-m>, :NERDTreeFocus<CR> \| :execute ':vertical resize' . ner
 nnoremap <silent> n :<C-u>call append(line("."),   repeat([""], v:count1))<CR>
 nnoremap <silent> N :<C-u>call append(line(".")-1, repeat([""], v:count1))<CR>
 
+" delete without yanking
+nnoremap <leader>d "_d
+vnoremap <leader>d "_d
+
+" replace currently selected text with default register without yanking it
+vnoremap <leader>p "_dP
+
 " Tabs
 set tabstop=4
 set shiftwidth=4

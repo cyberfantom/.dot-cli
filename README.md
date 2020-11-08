@@ -59,6 +59,8 @@ Keys | Result
 **Ctrl+m** or **Enter** in normal mode | Maximize split
 **Ctrl+m** **,** in normal mode | Set split sizes equal
 [**number**] + **n** / **N** in normal mode | Insert blank line below/above cursor
+**leader+d** in any mode | delete without yanking
+**leader+p** in any mode | paste without yanking
 **cp** in visual mode | Copy to system buffer
 **cv** in any mode | Paste from system buffer
 **leader-q** in normal mode | Quick quit
