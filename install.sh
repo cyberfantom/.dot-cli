@@ -1,6 +1,17 @@
 #!/bin/bash
 
 SCRIPT_PATH="$( cd "$(dirname "$0")" ; pwd -P )"
+NEOVIM=0
+
+for arg in "$@"
+do
+    case $arg in
+        --neovim)
+        NEOVIM=1
+        shift
+        ;;
+    esac
+done
 
 # Add string to file if not exists
 function update_file() {
@@ -12,14 +23,36 @@ function update_file() {
     fi
 }
 
+# Install packages
+pip3 install --user --upgrade powerline-status pynvim
+if [ ${NEOVIM} -eq 1 ]; then
+   pip3 install --user --upgrade \
+   yapf \
+   flake8 \
+   yamllint \
+   proselint \
+   vim-vint;
+fi
+
 # Clean previous Vim installation and install Vundle + Vim-plug
 rm -rf ~/.vim
 git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
-curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
-    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-ln -sf "${SCRIPT_PATH}/.vimrc" ~/.vimrc
+if [ ${NEOVIM} -eq 1 ]; then
+    rm -rf ~/.config/nvim && mkdir -p ~/.config/nvim
+    sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
+       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+fi
+
+# Setup configuration files
+echo "source ${SCRIPT_PATH}/.vimrc" > ~/.vimrc
+echo "source ${SCRIPT_PATH}/.ideavimrc" > ~/.ideavimrc
+echo "source ${SCRIPT_PATH}/init.vim" > ~/.config/nvim/init.vim
+
+# Install plugins
 vim -c ":PluginInstall" -c ":bdelete" -c ":q!"
-vim -c ":PlugInstall" -c ":bdelete" -c ":q!"
+if [ ${NEOVIM} -eq 1 ]; then
+   nvim -c ":PlugInstall" -c ":bdelete" -c ":q!"
+fi
 
 # Clean previous Tmux installation and install TPM
 rm -rf ~/.tmux
@@ -33,7 +66,6 @@ update_file 'export PATH=$PATH:$HOME/.local/bin' ~/.bashrc
 update_file 'export TERM=xterm-256color' ~/.bashrc
 
 # Install powerline
-pip3 install --user powerline-status mdv
 PY3_LOCAL_VER=`python3 -c 'import sys; print(str(sys.version_info[0])+"."+str(sys.version_info[1]))'`
 POWERLINE_PATH="~/.local/lib/python${PY3_LOCAL_VER}/site-packages/powerline"
 

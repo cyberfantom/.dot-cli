@@ -1,0 +1,162 @@
+" Base settings
+set laststatus=2
+set noshowmode
+set encoding=UTF-8
+set mouse=a
+set enc=utf-8
+syntax on
+set cursorline
+set number
+set showmatch
+set noruler
+set title
+set shortmess=at
+set noshowcmd
+set cmdheight=1
+set nobackup
+set nowritebackup
+set noswapfile
+set fileformats="unix,dos,mac"
+set formatoptions+=1
+set autoread
+set updatetime=1000
+silent! set termguicolors " or try notermguicolors
+set background=dark
+set mouse-=a
+let &colorcolumn="80,".join(range(120,999),",")
+set modifiable
+"" No annoying sound on errors
+set noerrorbells
+set novisualbell
+set t_vb=
+set tm=500
+"" Remove trailing whitespaces
+autocmd BufWritePre * :%s/\s\+$//e
+"" Optional custom variables
+let nerdtree_size=42
+
+" Airline
+let g:airline_theme='gruvbox'
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tagbar#enabled = 0
+let g:airline#extensions#whitespace#enabled = 0
+let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#show_close_button = 0
+let g:airline#extensions#tabline#tab_nr_type = 1
+let g:airline#extensions#tabline#show_tab_nr = 1
+let g:airline#extensions#tabline#tabs_label = ''
+let g:airline#extensions#tabline#buffers_label = ''
+let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
+"let g:airline#extensions#tabline#fnamemod = ':t'       " disable file paths in the tab - affects to formatter settings
+"let g:airline_section_c = '%t'
+let g:airline#extensions#tabline#show_tab_count = 0    " dont show tab numbers on the right
+let g:airline#extensions#tabline#show_buffers = 0      " dont show buffers in the tabline
+let g:airline#extensions#tabline#tab_min_count = 2     " minimum of 2 tabs needed to display the tabline
+let g:airline#extensions#tabline#show_splits = 0       " disables the buffer name that displays on the right of the tabline
+let g:airline#extensions#tabline#show_tab_type = 0     " disables the weird ornage arrow on the tabline
+let g:airline#extensions#term#enabled = 0              " disable term integration
+let g:airline#extensions#hunks#enabled=0               " Don't show git changes to current file in airline
+let g:airline_skip_empty_sections = 1 " Do not draw separators for empty sections
+" Customize vim airline per filetype
+" 'nerdtree'  - Hide nerdtree status line
+" 'list'      - Only show file type plus current line number out of total
+let g:airline_filetype_overrides = {
+  \ 'nerdtree': [ get(g:, 'NERDTreeStatusline', ''), '' ],
+  \ 'list': [ '%y', '%l/%L'],
+  \ }
+
+" Splits
+set splitbelow
+set splitright
+
+" Enable folding
+" Use za keys to fold/unfold block
+set foldmethod=indent
+set foldlevel=99
+" SimpylFold settings
+let g:SimpylFold_docstring_preview=1
+
+" Adjusing split sizes
+noremap <silent> <C-Left> :vertical resize +3<CR>
+noremap <silent> <C-Right> :vertical resize -3<CR>
+noremap <silent> <C-Up> :resize +3<CR>
+noremap <silent> <C-Down> :resize -3<CR>
+" Maximize / restore splits
+nnoremap <silent> <C-m> <C-w>\|<C-w>_
+
+" Add new line(s) in normal mode
+nnoremap n o<Esc>
+nnoremap N O<Esc>j
+
+" delete without yanking
+nnoremap <leader>d "_d
+vnoremap <leader>d "_d
+nnoremap <leader>dd "_dd
+vnoremap <leader>dd "_dd
+
+" replace currently selected text with default register without yanking it
+vnoremap <leader>p "_dP
+nnoremap <leader>p "_dP
+
+" Tabs
+set tabstop=4
+set shiftwidth=4
+set smarttab
+set expandtab
+set smartindent
+
+" Removes pipes | that act as seperators on splits
+set fillchars+=vert:▌ " ASCII 221 or ║ - ASCII 186
+
+" Color scheme
+" comment set t_Co and t_ut on modern terminals
+set t_Co=256
+set t_ut=
+silent! colorscheme gruvbox
+
+" Indent Line
+let g:indentLine_char = '│' " ASCII 179
+map <silent> <C-i> :IndentLinesToggle<CR>
+let g:indentLine_setConceal = 2
+" default ''.
+" n for Normal mode
+" v for Visual mode
+" i for Insert mode
+" c for Command line editing, for 'incsearch'
+let g:indentLine_concealcursor = ""
+" disable indent lines in nerdtree
+let g:indentLine_fileTypeExclude = ["nerdtree"]
+
+" CtrlP
+let g:ctrlp_custom_ignore = {
+  \ 'dir':  '\v[\/]\.(git|hg|svn)$',
+  \ 'file': '\v\.(exe|so|dll)$',
+  \ }
+
+" Hidden symbols
+function! ConcealLevelToggle()
+    if &conceallevel
+        setlocal conceallevel=0
+    else
+        setlocal conceallevel=2
+    endif
+endfunction
+set showbreak=↪\
+set listchars=tab:→\ ,eol:↲,nbsp:␣,trail:•,extends:⟩,precedes:⟨
+map <silent> <C-h> :set list!<CR> \| :call ConcealLevelToggle()<CR>
+
+" Loclist keymap
+nmap <silent> <leader>e :lopen<CR>
+autocmd FileType qf map <buffer> <Enter> :execute line(".") . 'll'<CR>
+
+" Exit from terminal insert mode with leader-ESC
+tnoremap <leader><Esc> <C-\><C-n>
+
+" Fast window close
+map <leader>q :q<CR>
+" Fast window close without saving
+map <leader>q1 :q!<CR>
+" Fast close all windows without saving
+map <leader>qa :qa!<CR>
+" Fast save
+map <leader>w :w<CR>

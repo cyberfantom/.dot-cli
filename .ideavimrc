@@ -1,0 +1,35 @@
+" Load common vim settings
+source ~/.dot-cli/.vimrc-base
+
+" IdeaVim specific settings
+
+" Emulated Plugins
+set surround
+
+" Copy to system clipboard
+set clipboard+=unnamed
+
+" Keymap
+nnoremap <leader>e :action SearchEverywhere<CR>
+nnoremap <leader>g :action FindInPath<CR>
+nnoremap <leader>s :action FileStructurePopup<CR>
+
+" Closing tabs
+"nmap <leader>q :action CloseActiveTab<CR>
+
+nnoremap gd :action GotoDeclaration<CR>
+nnoremap gs :action GotoSuperMethod<CR>
+nnoremap gi :action GotoImplementation<CR>
+nnoremap gb :action JumpToLastChange<CR>
+
+nnoremap U :action FindUsages<CR>
+nnoremap R :action RenameElement<CR>
+
+nnoremap == :action ReformatCode<CR>
+vnoremap == :action ReformatCode<CR>
+
+nnoremap <C-CR> :action ShowIntentionActions<CR>
+
+nnoremap <leader>a :action GotoAction<CR>
+vnoremap <leader>a :action GotoAction<CR>
+
