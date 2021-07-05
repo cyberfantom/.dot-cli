@@ -11,7 +11,7 @@ Also here is a file `.ideavimrc` for IdeaVim emulation plugin for IntelliJ Platf
 
 ### Requirements
 - Vim 8.x / Neovim 4.x
-- Tmux 3
+- Tmux >= 2.6
 - Git
 - Python3 and pip
 - Powerline-compatible font
@@ -24,7 +24,7 @@ Also here is a file `.ideavimrc` for IdeaVim emulation plugin for IntelliJ Platf
 
 Depends of what do you want to install, here can be a various options. Default setup (`install.sh` without parameters) is a Vim Regular setup + Tmux. Note, that installation script only deploying configuration and installing plugins plus python packages.
 
-**Tmux** configuration requires **Tmux 3**. If you don't have it in your package manager, follow [Install required packages](#install-required-packages),
+**Tmux** configuration requires **Tmux >= 2.6**. If you don't have it in your package manager, follow [Install required packages](#install-required-packages),
  then [Build latest Tmux from source](#build-latest-tmux-from-source).
 
 **Vim Regular** requires only **Vim 8.x+** with Python support, so you can use (mostly) Vim from your system package manager and just follow [Install .dot-cli environment](#install-.dot-cli-environment)
@@ -75,7 +75,7 @@ $ git clone https://github.com/neovim/neovim.git
 $ cd neovim
 $ git checkout stable
 $ make CMAKE_BUILD_TYPE=Release -j $(nproc --all)
-$ sudo make CMAKE_INSTALL_PREFIX=/usr/local/stow/nvim install
+$ sudo make CMAKE_BUILD_TYPE=Release CMAKE_INSTALL_PREFIX=/usr/local/stow/nvim install
 
 # Install Neovim for current user
 $ stow -d /usr/local/stow -t ~/.local nvim
@@ -134,31 +134,38 @@ $ npm install --save-dev --save-exact -g prettier
 
 Install [Lazygit](https://github.com/jesseduffield/lazygit#installation) - a simple terminal UI for git commands.
 
+Install [Lazydocker](https://github.com/jesseduffield/lazydocker#installation) - a simple terminal UI for both docker and docker-compose.
+
+Install [ripgrep](https://github.com/BurntSushi/ripgrep#installation) - fast search tool.
+
+Install [FZF](https://github.com/junegunn/fzf) - command-line fuzzy finder.
+
 #### Build latest Tmux from source
 
 **DEB-based distros**
 ```bash
 $ sudo apt install build-essential checkinstall \
-libevent-dev libutf8proc-dev libutempter-dev bison pkg-config
+libevent-dev ncurses-dev libutf8proc-dev libutempter-dev bison pkg-config
 ```
 
 **RPM-based distros**
 
 ```bash
 $ sudo yum group install "Development Tools"
-$ sudo yum install checkinstall libevent-devel utf8proc-devel libutempter-devel bison pkg-config
+$ sudo yum install checkinstall libevent-devel ncurses-devel utf8proc-devel libutempter-devel bison pkg-config
 ```
 
 ```bash
 # get latest version of Tmux: https://github.com/tmux/tmux/tags
 # and set in script below: TMUX_TAG="<TAG>"
-$ TMUX_TAG="3.1c"
+# optionally use configure options --enable-utempter --enable-utf8proc
+$ TMUX_TAG="3.2"
 $ cd /tmp && \
 git clone https://github.com/tmux/tmux.git && \
 cd tmux && \
 git checkout tags/$TMUX_TAG && \
 sh autogen.sh && \
-./configure --enable-utempter --enable-utf8proc && make && \
+./configure && make -j $(nproc --all) && \
 sudo checkinstall --pkgname tmux --pkgversion $TMUX_TAG
 
 # Uninstall Tmux instalaltion with package manager, if needed
@@ -190,36 +197,79 @@ Now we have installed Vim/Neovim and Tmux. Use as usual. Change as you want.
 
 **Extra Keys**
 
-Keys | Action | Installation
----|---|---
-**F8** | Toggle Tagbar | Neovim IDE
-**Ctrl+n** | Toggle NerdTree | Neovim IDE
-**Ctrl+p** | Toggle CtrlP | ALL
-**Ctrl+i** in normal mode | Toggle indent lines | ALL
-**Ctrl+h** in normal mode | Toggle hidden symbols | ALL
-**Ctrl+Arrows** in normal mode | Resize splits | ALL
-**Ctrl+m** or **Enter** in normal mode | Maximize split | ALL
-**Ctrl+m** **,** in normal mode | Set split sizes equal | ALL
-[**number**] + **n** / **N** in normal mode | Insert blank line below/above cursor | ALL
-**leader+d[d]** in any mode | delete without yanking | ALL
-**leader+p** in any mode | paste without yanking | ALL
-**cp** in visual mode | Copy to system buffer | ALL
-**cv** in any mode | Paste from system buffer | ALL
-**gcc / gc** in any mode | Comment line / selected text | ALL
-**leader-e** in any mode | Open errors buffer | ALL
-**Enter** in "errors buffer" | Jump to error | ALL
-**leader-ESC** in terminal | Exit from terminal insert mode | ALL
-**leader-t** in any mode | Open Floaterm (project root) | Neovim IDE
-**leader-\`** in any mode | Open horizontal terminal (file parent dir) | ALL
-**leader-\`1** in any mode | Open vertical terminal (file parent dir) | ALL
-**leader-g** in normal mode | Open Lazygit in vertical split | Neovim IDE
-**leader-gf** in normal mode | Open Lazygit maximized | Neovim IDE
-**leader-m** in normal mode | Open markdown preview in browser | Neovim IDE
-**leader-f** in normal mode | Format code | Neovim IDE
-**leader-q** in normal mode | Quick quit (:q) | ALL
-**leader-q1** in normal mode | Quick quit without saving (:q!) | ALL
-**leader-qa** in normal mode | Quit all without saving (:qa!) | ALL
-**leader-w** in normal mode | Quick save (:w) | ALL
+Keys | Action | Mode | Installation
+---|---|---|---
+**F8** | Toggle Tagbar | Normal | Neovim IDE
+**Ctrl+n** | Toggle NerdTree | Normal | Neovim IDE
+**Ctrl+n** | Toggle Deoplete completion | Insert | Neovim IDE
+**Ctrl+p** | Toggle CtrlP | Normal | Vim
+**Ctrl+i** | Toggle indent lines | Normal | ALL
+**Ctrl+h** | Toggle hidden symbols | Normal | ALL
+**Ctrl+Arrows** | Resize splits | Normal | ALL
+**Ctrl+m** or **Enter** | Maximize split | Normal | ALL
+**Ctrl+m** **,** | Set split sizes equal | Normal | ALL
+[**number**] + **n** / **N** | Insert blank line below/above cursor | Normal | ALL
+**leader+d[d]** | delete without yanking | Normal/Visual | ALL
+**leader+p** | paste without yanking | Normal/Visual | ALL
+**cp** | Copy to system buffer | Visual | ALL
+**cv** | Paste from system buffer | Normal | ALL
+**gcc / gc** | Comment line / selected text | Normal/Visual | ALL
+**Ctrl+q / l** | Toggle quickfix/location list | Normal | Neovim IDE
+**Enter** in quickfix/location list | Open usage in previous buffer | Normal | Neovim IDE
+**Ctrl+v / x / t** in quickfix/location list | Open usage v: vertical split, x: horizontal split, t: tab | Normal | Neovim IDE
+**leader+ESC** in terminal | Exit from terminal insert mode | Insert | ALL
+**leader+t** | Open Floaterm (project root) | Normal | Neovim IDE
+**leader+\`** | Open horizontal terminal (file parent dir) | Normal | ALL
+**leader+\`1** | Open vertical terminal (file parent dir) | Normal | ALL
+**leader+g** | Open Lazygit in vertical split | Normal | Neovim IDE
+**leader+gf**  | Open Lazygit maximized | Normal | Neovim IDE
+**leader+c** | Open Lazydocker in vertical split | Normal | Neovim IDE
+**leader+cf**  | Open Lazydocker maximized | Normal | Neovim IDE
+**ghp**  | Preview git hunk | Normal | Neovim IDE
+**leader+m** | Open markdown preview in browser | Normal | Neovim IDE
+**leader+f** | Format code | Normal | Neovim IDE
+**leader+q** | Quick quit (:q) | Normal | ALL
+**leader+q1** | Quick quit without saving (:q!) | Normal | ALL
+**leader+qa** | Quit all without saving (:qa!) | Normal | ALL
+**leader+w** | Quick save (:w) | Normal | ALL
+**ff** | Fuzzy find files. Respect ignore files | Normal | Neovim IDE
+**F** | Fuzzy find all files. | Normal | Neovim IDE
+**fa** | Find text in all project files | Normal | Neovim IDE
+**fb** | Find text in opened buffers | Normal | Neovim IDE
+**ca** | Find word under cursor in all project files | Normal | Neovim IDE
+**cb** | Find word under cursor in opened buffers | Normal | Neovim IDE
+**fr** | Replace occurrences in quickfix list | Normal | Neovim IDE
+**leader+s** | Insert docstring | Normal | Neovim IDE
+**Ctrl+s** | Insert snippet | Normal | Neovim IDE
+**Ctrl+l** | List snippets | Normal | Neovim IDE
+
+**Python IDE**
+
+Keys | Action | Mode | Installation
+---|---|---|---
+**leader+j** | Go to assignments | Normal | Neovim IDE
+**leader+jj** | Go to definition | Normal | Neovim IDE
+**leader+n** | Find usages | Normal | Neovim IDE
+**leader+r** | Rename | Normal | Neovim IDE
+**K** | Show docstring | Normal | Neovim IDE
+--- | **Debug** | --- | ---
+**F5** | Run debug | Normal | Neovim IDE
+**F2** | Step over | Normal | Neovim IDE
+**F3** | Step into | Normal | Neovim IDE
+**F4** | Step out | Normal | Neovim IDE
+**F9** | Run to cursor | Normal | Neovim IDE
+**F10** | Set breakpoint | Normal | Neovim IDE
+**F11** | Get context | Normal | Neovim IDE
+**leader+c** | Eval under cursor | Normal | Neovim IDE
+**leader+v** | Eval visual | Normal | Neovim IDE
+**x** | Detach | Normal | Neovim IDE
+**q** | Close | Normal | Neovim IDE
+
+Debugging workflow:
+1. Set breakpoints or use Run to cursor (\<F9\>)
+2. Run debugger - \<F5\>
+3. Run target script: `pydbgp myscript.py`
+4. Navigate over breakpoints \<F2\> \<F3\> \<F4\> or use \<F9\>
 
 #### Tmux
 
@@ -236,5 +286,4 @@ Keys | Action
 **y** in copy mode | Vim-style selected text copy to buffers (Tmux + system)
 **prefix** + **r** | Reload Tmux config
 **prefix** + **@** | Join pane to selected window
-**prefix** + **Tab**/**Backspace** | Toggle tree directory listing in sidebar (tmux-sidebar plugin defaults)
 **prefix** + **Ctrl-s**/**Ctrl-r** | Save/restore session (tmux-resurrect plugin defaults)

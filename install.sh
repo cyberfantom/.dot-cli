@@ -24,14 +24,9 @@ function update_file() {
 }
 
 # Install packages
-pip3 install --user --upgrade powerline-status pynvim
+pip3 install --user --upgrade powerline-status
 if [ ${NEOVIM} -eq 1 ]; then
-   pip3 install --user --upgrade \
-   yapf \
-   flake8 \
-   yamllint \
-   proselint \
-   vim-vint;
+   pip3 install --user --upgrade -r ${SCRIPT_PATH}/requirements.nvim.txt;
 fi
 
 # Clean previous Vim installation and install Vundle + Vim-plug
@@ -45,7 +40,6 @@ fi
 
 # Setup configuration files
 echo "source ${SCRIPT_PATH}/.vimrc" > ~/.vimrc
-echo "source ${SCRIPT_PATH}/.ideavimrc" > ~/.ideavimrc
 echo "source ${SCRIPT_PATH}/init.vim" > ~/.config/nvim/init.vim
 
 # Install plugins

@@ -1,0 +1,9 @@
+pynvim
+flake8
+isort
+black
+jedi
+komodo-python3-dbgp
+yamllint
+proselint
+vim-vint

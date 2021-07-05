@@ -32,8 +32,6 @@ set t_vb=
 set tm=500
 "" Remove trailing whitespaces
 autocmd BufWritePre * :%s/\s\+$//e
-"" Optional custom variables
-let nerdtree_size=42
 
 " Airline
 let g:airline_theme='gruvbox'
@@ -55,8 +53,9 @@ let g:airline#extensions#tabline#tab_min_count = 2     " minimum of 2 tabs neede
 let g:airline#extensions#tabline#show_splits = 0       " disables the buffer name that displays on the right of the tabline
 let g:airline#extensions#tabline#show_tab_type = 0     " disables the weird ornage arrow on the tabline
 let g:airline#extensions#term#enabled = 0              " disable term integration
-let g:airline#extensions#hunks#enabled=0               " Don't show git changes to current file in airline
+let g:airline#extensions#hunks#enabled = 0             " Don't show git changes to current file in airline
 let g:airline_skip_empty_sections = 1 " Do not draw separators for empty sections
+let g:airline_highlighting_cache = 0
 " Customize vim airline per filetype
 " 'nerdtree'  - Hide nerdtree status line
 " 'list'      - Only show file type plus current line number out of total
@@ -98,6 +97,9 @@ vnoremap <leader>dd "_dd
 vnoremap <leader>p "_dP
 nnoremap <leader>p "_dP
 
+" Make double-<Esc> clear search highlights
+nnoremap <silent> <Esc><Esc> <Esc>:nohlsearch<CR><Esc>
+
 " Tabs
 set tabstop=4
 set shiftwidth=4
@@ -112,6 +114,7 @@ set fillchars+=vert:▌ " ASCII 221 or ║ - ASCII 186
 " comment set t_Co and t_ut on modern terminals
 set t_Co=256
 set t_ut=
+let g:gruvbox_italic=1
 silent! colorscheme gruvbox
 
 " Indent Line
@@ -144,10 +147,6 @@ endfunction
 set showbreak=↪\
 set listchars=tab:→\ ,eol:↲,nbsp:␣,trail:•,extends:⟩,precedes:⟨
 map <silent> <C-h> :set list!<CR> \| :call ConcealLevelToggle()<CR>
-
-" Loclist keymap
-nmap <silent> <leader>e :lopen<CR>
-autocmd FileType qf map <buffer> <Enter> :execute line(".") . 'll'<CR>
 
 " Exit from terminal insert mode with leader-ESC
 tnoremap <leader><Esc> <C-\><C-n>
