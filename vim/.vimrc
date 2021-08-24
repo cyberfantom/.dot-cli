@@ -16,11 +16,12 @@ Plugin 'christoomey/vim-system-copy'
 Plugin 'tpope/vim-commentary'
 Plugin 'tmhedberg/SimpylFold'
 Plugin 'psliwka/vim-smoothie'
+Plugin 'mbbill/undotree'
 call vundle#end()
 filetype plugin indent on
 
 " Load base config
-source ~/.dot-cli/.vimrc-base
+source ~/.dot-cli/vim/.vimrc-base
 
 " Light version specific config:
 

@@ -2,12 +2,17 @@
 
 SCRIPT_PATH="$( cd "$(dirname "$0")" ; pwd -P )"
 NEOVIM=0
+KITTY=0
 
 for arg in "$@"
 do
     case $arg in
         --neovim)
         NEOVIM=1
+        shift
+        ;;
+        --kitty)
+        KITTY=1
         shift
         ;;
     esac
@@ -26,7 +31,7 @@ function update_file() {
 # Install packages
 pip3 install --user --upgrade powerline-status
 if [ ${NEOVIM} -eq 1 ]; then
-   pip3 install --user --upgrade -r ${SCRIPT_PATH}/requirements.nvim.txt;
+   pip3 install --user --upgrade -r ${SCRIPT_PATH}/vim/requirements.nvim.txt;
 fi
 
 # Clean previous Vim installation and install Vundle + Vim-plug
@@ -39,20 +44,20 @@ if [ ${NEOVIM} -eq 1 ]; then
 fi
 
 # Setup configuration files
-echo "source ${SCRIPT_PATH}/.vimrc" > ~/.vimrc
-echo "source ${SCRIPT_PATH}/init.vim" > ~/.config/nvim/init.vim
+echo "source ${SCRIPT_PATH}/vim/.vimrc" > ~/.vimrc
+echo "source ${SCRIPT_PATH}/vim/init.vim" > ~/.config/nvim/init.vim
 
 # Install plugins
-vim -c ":PluginInstall" -c ":bdelete" -c ":q!"
+vim -c ":PluginInstall" -c ":bdelete" -c ":qa!"
 if [ ${NEOVIM} -eq 1 ]; then
-   nvim -c ":PlugInstall" -c ":bdelete" -c ":q!"
+   nvim -u ~/.dot-cli/vim/init-plugins.vim -c ":PlugInstall" -c ":bdelete" -c ":qa!"
 fi
 
 # Clean previous Tmux installation and install TPM
 rm -rf ~/.tmux
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-ln -sf "${SCRIPT_PATH}/.tmux.conf" ~/.tmux.conf
-ln -sf "${SCRIPT_PATH}/.tmux.remote.conf" ~/.tmux/.tmux.remote.conf
+ln -sf "${SCRIPT_PATH}/tmux/.tmux.conf" ~/.tmux.conf
+ln -sf "${SCRIPT_PATH}/tmux/.tmux.remote.conf" ~/.tmux/.tmux.remote.conf
 `which tmux` source ~/.tmux.conf && ~/.tmux/plugins/tpm/scripts/install_plugins.sh
 
 # Path and Term environment
@@ -86,6 +91,11 @@ cp -R ${SCRIPT_PATH}/powerline/* ~/.config/powerline/
 
 # Misc
 update_file 'alias mc="mc -S xoria256.ini"' ~/.bashrc
+## kitty config
+if [ ${KITTY} -eq 1 ]; then
+    mkdir -p ~/.config/kitty/
+    cp -R ${SCRIPT_PATH}/kitty/* ~/.config/kitty/
+fi
 
 # Reload daemons and configs
 $HOME/.local/bin/powerline-daemon --kill

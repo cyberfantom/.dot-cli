@@ -1,5 +1,5 @@
 " Load common vim settings
-source ~/.dot-cli/.vimrc-base
+source ~/.dot-cli/vim/.vimrc-base
 
 " IdeaVim specific settings
 

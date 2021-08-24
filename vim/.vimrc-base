@@ -4,7 +4,7 @@ set noshowmode
 set encoding=UTF-8
 set mouse=a
 set enc=utf-8
-syntax on
+set syntax=on
 set cursorline
 set number
 set showmatch
@@ -159,3 +159,21 @@ map <leader>q1 :q!<CR>
 map <leader>qa :qa!<CR>
 " Fast save
 map <leader>w :w<CR>
+
+" UndoTree
+nnoremap <silent> <leader>u :UndotreeToggle<CR>
+if !exists('g:undotree_WindowLayout')
+    let g:undotree_WindowLayout = 3
+endif
+if has("persistent_undo")
+   let target_path = expand('~/.undodir')
+
+    " create the directory and any parent directories
+    " if the location does not exist.
+    if !isdirectory(target_path)
+        call mkdir(target_path, "p", 0700)
+    endif
+
+    let &undodir=target_path
+    set undofile
+endif
