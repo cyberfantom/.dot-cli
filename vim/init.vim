@@ -1,7 +1,5 @@
 set nocompatible
 set lazyredraw
-set cmdheight=2
-set shortmess=a
 set ttyfast
 filetype off
 "set writedelay=1
@@ -45,15 +43,15 @@ let g:nvim_tree_width = 42
 let g:nvim_tree_ignore = [ '.git', 'node_modules', '\.pyc$', '\.pyo$', '\.egg-info$', '__pycache__', '.venv', 'venv']
 let g:nvim_tree_auto_open = 1
 let g:nvim_tree_auto_close = 1
+let g:nvim_tree_follow = 1
 let g:nvim_tree_indent_markers = 1
 let g:nvim_tree_highlight_opened_files = 1
 let g:nvim_tree_tab_open = 1
 let g:nvim_tree_hijack_cursor = 0
-let g:nvim_tree_disable_window_picker = 1
-let g:nvim_tree_respect_buf_cwd = 1
 let g:nvim_tree_add_trailing = 1
+let g:nvim_tree_git_hl = 1
 let g:nvim_tree_show_icons = {
-    \ 'git': 1,
+    \ 'git': 0,
     \ 'folders': 1,
     \ 'files': 1,
     \ 'folder_arrows': 1,
@@ -283,7 +281,7 @@ nmap <F8> :TagbarToggle<CR>
 
 " vim-doge (doc gen) keymap
 " navigate TODO <Tab> <S-Tab>
-let g:doge_mapping = "<leader>s"
+let g:doge_mapping = "<Leader>s"
 let g:doge_doc_standard_python = 'sphinx'
 
 " ultisnips settings
@@ -297,6 +295,7 @@ let g:UltiSnipsJumpForwardTrigger="<Down>"
 let g:UltiSnipsJumpBackwardTrigger="<Up>"
 " If you want :UltiSnipsEdit to split your window.
 let g:UltiSnipsEditSplit="vertical"
+let g:ultisnips_python_style = "sphinx"
 
 " ALE
 " Linting

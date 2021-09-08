@@ -3,14 +3,14 @@ set laststatus=2
 set noshowmode
 set encoding=UTF-8
 set mouse=a
-set enc=utf-8
+set encoding=utf-8
 set syntax=on
 set cursorline
 set number
 set showmatch
 set noruler
 set title
-set shortmess=at
+set shortmess=aoOtI
 set noshowcmd
 set cmdheight=1
 set nobackup

@@ -144,6 +144,9 @@ Install [FZF](https://github.com/junegunn/fzf) - command-line fuzzy finder.
 Install [Kitty](https://sw.kovidgoyal.net/kitty/binary/) - The fast, feature-rich, GPU based terminal emulator.
 Kitty configuration included in this repo.
 
+Install [Starship](https://starship.rs/) - The fast and customizable prompt for any shell.
+Starship configuration included in this repo.
+
 Install [NerdFonts](https://github.com/ryanoasis/nerd-fonts) - Powerline compatible fonts.
 
 #### Build latest Tmux from source
@@ -184,10 +187,11 @@ rpm -e tmux # rpm-based
 - `install.sh` without options - install just **Vim Regular** + **Tmux**
 - `--neovim` option installs **Vim Regular** + **Tmux** + **Neovim IDE**
 - `--kitty` option installs **Kitty** terminal config to `~/.config/kitty/`
+- `--starship` option installs **Starship** config to `~/.config/starship.toml`.
 
 ```bash
 $ git clone https://github.com/cyberfantom/.dot-cli.git ~/.dot-cli && cd ~/
-$ .dot-cli/install.sh [--neovim] [--kitty]
+$ .dot-cli/install.sh [--neovim] [--kitty] [--starship]
 ```
 Next, just login again or run:
 ```bash

@@ -3,6 +3,7 @@
 SCRIPT_PATH="$( cd "$(dirname "$0")" ; pwd -P )"
 NEOVIM=0
 KITTY=0
+STARSHIP=0
 
 for arg in "$@"
 do
@@ -13,6 +14,10 @@ do
         ;;
         --kitty)
         KITTY=1
+        shift
+        ;;
+        --starship)
+        STARSHIP=1
         shift
         ;;
     esac
@@ -28,13 +33,19 @@ function update_file() {
     fi
 }
 
-# Install packages
-pip3 install --user --upgrade powerline-status
+# Install Starship
+if [ ${STARSHIP} -eq 1 ]; then
+    update_file 'eval "$(starship init bash)"' ~/.bashrc
+    cp "${SCRIPT_PATH}/starship/starship.toml" ~/.config/starship.toml
+fi
+
+# Install neovim requirements
 if [ ${NEOVIM} -eq 1 ]; then
    pip3 install --user --upgrade -r ${SCRIPT_PATH}/vim/requirements.nvim.txt;
 fi
 
 # Clean previous Vim installation and install Vundle + Vim-plug
+# @TODO: remove Vundle
 rm -rf ~/.vim
 git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
 if [ ${NEOVIM} -eq 1 ]; then
@@ -64,33 +75,10 @@ ln -sf "${SCRIPT_PATH}/tmux/.tmux.remote.conf" ~/.tmux/.tmux.remote.conf
 update_file 'export PATH=$PATH:$HOME/.local/bin' ~/.bashrc
 update_file 'export TERM=xterm-256color' ~/.bashrc
 
-# Install powerline
-PY3_LOCAL_VER=`python3 -c 'import sys; print(str(sys.version_info[0])+"."+str(sys.version_info[1]))'`
-POWERLINE_PATH="~/.local/lib/python${PY3_LOCAL_VER}/site-packages/powerline"
-
-P_LINE="$(cat <<-END
-if [ -f ${POWERLINE_PATH}/bindings/bash/powerline.sh ]; then
-    powerline-daemon -q;
-    POWERLINE_BASH_CONTINUATION=1;
-    POWERLINE_BASH_SELECT=1;
-    . ${POWERLINE_PATH}/bindings/bash/powerline.sh;
-fi
-END
-)"
-P_LINE="$(echo ${P_LINE})"
-update_file "${P_LINE}" ~/.bashrc
-
-# set tmux powerline config
-echo "source ${POWERLINE_PATH}/bindings/tmux/powerline.conf" > ~/.tmux/.tmux.powerline.conf
-
-# powerline configs
-eval POWERLINE_PATH=$POWERLINE_PATH
-mkdir -p ~/.config/powerline
-cp -R ${POWERLINE_PATH}/config_files/* ~/.config/powerline/
-cp -R ${SCRIPT_PATH}/powerline/* ~/.config/powerline/
-
 # Misc
 update_file 'alias mc="mc -S xoria256.ini"' ~/.bashrc
+update_file 'alias ssh="TERM=xterm-256color ssh"' ~/.bashrc
+
 ## kitty config
 if [ ${KITTY} -eq 1 ]; then
     mkdir -p ~/.config/kitty/
@@ -98,8 +86,8 @@ if [ ${KITTY} -eq 1 ]; then
 fi
 
 # Reload daemons and configs
-$HOME/.local/bin/powerline-daemon --kill
 `which tmux` kill-server
+rm -rf /tmp/tmux-${UID}/
 source ~/.bashrc
 
 exit 0
