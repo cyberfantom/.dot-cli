@@ -38,4 +38,5 @@ Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'kevinhwang91/nvim-bqf'
 Plug 'mbbill/undotree'
+Plug 'mhinz/vim-startify'
 call plug#end()

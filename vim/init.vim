@@ -38,18 +38,20 @@ nnoremap fe <cmd>lua require('telescope.builtin').file_browser()<cr>
 nnoremap fd <cmd>lua require('telescope.builtin').lsp_document_diagnostics()<cr>
 nnoremap fl <cmd>lua require('telescope.builtin').builtin()<cr>
 
+" Startify
+let g:startify_lists = [
+          \ { 'type': 'files',     'header': ['   Files']            },
+          \ { 'type': 'dir',       'header': ['   Current Directory '. getcwd()] },
+          \ { 'type': 'sessions',  'header': ['   Sessions']       },
+          \ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
+          \ ]
+
 " nvim-tree settings
-let g:nvim_tree_width = 42
-let g:nvim_tree_ignore = [ '.git', 'node_modules', '\.pyc$', '\.pyo$', '\.egg-info$', '__pycache__', '.venv', 'venv']
-let g:nvim_tree_auto_open = 1
-let g:nvim_tree_auto_close = 1
-let g:nvim_tree_follow = 1
 let g:nvim_tree_indent_markers = 1
 let g:nvim_tree_highlight_opened_files = 1
-let g:nvim_tree_tab_open = 1
-let g:nvim_tree_hijack_cursor = 0
 let g:nvim_tree_add_trailing = 1
 let g:nvim_tree_git_hl = 1
+let g:nvim_tree_respect_buf_cwd = 0
 let g:nvim_tree_show_icons = {
     \ 'git': 0,
     \ 'folders': 1,
@@ -85,6 +87,29 @@ let g:nvim_tree_icons = {
     \     'error': "",
     \   }
     \ }
+lua << EOF
+require'nvim-tree'.setup {
+    open_on_setup = false,
+    auto_close  = true,
+    hijack_cursor = false,
+    open_on_tab = true,
+    disable_netrw  = false,
+    hijack_netrw   = false,
+    update_cwd     = false,
+    update_focused_file = {
+        enable = true,
+    },
+    filters = {
+      custom = {'.git', 'node_modules', '.pyc$', '.pyo$', '.egg-info$', '__pycache__', '.venv', 'venv'},
+    },
+    view = {
+    width = 42,
+    side = 'left',
+    auto_resize = false,
+  }
+}
+EOF
+
 highlight NvimTreeIndentMarker guifg=#555756
 nnoremap <C-n> :NvimTreeToggle<CR>
 
@@ -109,20 +134,29 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
   buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
   buf_set_keymap('n', 'gu', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+  buf_set_keymap('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+
+  -- tsserver specific opts
+  if client.name == "tsserver" then
+        -- disable code format in tsserver
+        client.resolved_capabilities.document_formatting = false
+        client.resolved_capabilities.document_range_formatting = false
+        --buf_set_keymap("n", "<Leader>o", "<CMD>TSServerOrganizeImports<CR>", opts)
+  end
 end
 
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities.textDocument.completion.completionItem.snippetSupport = true
-
-local servers = { 'pyright', 'rust_analyzer', 'gopls' }
+local servers = { 'pyright', 'rust_analyzer', 'gopls', 'tsserver' }
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup {
     capabilities = capabilities,
     on_attach = on_attach,
     flags = {
-      debounce_text_changes = 150,
+      debounce_text_changes = 300,
+      allow_incremental_sync = true
     }
   }
 end
@@ -135,6 +169,59 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
         update_in_insert = true
     }
 )
+
+-- Formatters and Linters
+local eslint = {
+  lintCommand = "eslint_d -f visualstudio --stdin --stdin-filename ${INPUT}",
+  lintStdin = true,
+  lintFormats = {"%f(%l,%c): %tarning %m", "%f(%l,%c): %rror %m"},
+  lintIgnoreExitCode = true,
+  formatCommand = "eslint_d --fix-to-stdout --stdin --stdin-filename=${INPUT}",
+  formatStdin = true
+}
+local prettier = {
+  formatCommand = 'prettier --stdin-filepath ${INPUT}',
+  formatStdin = true
+}
+local black = { formatCommand = 'black --quiet -', formatStdin = true }
+
+local efm_languages = {
+    yaml = {prettier},
+    json = {prettier},
+    markdown = {prettier},
+    javascript = {eslint, prettier},
+    javascriptreact = {eslint, prettier},
+    ["javascript.jsx"] = {eslint, prettier},
+    typescript = {eslint, prettier},
+    typescriptreact = {eslint, prettier},
+    ["typescript.tsx"] = {eslint, prettier},
+    css = {prettier},
+    scss = {prettier},
+    sass = {prettier},
+    less = {prettier},
+    graphql = {prettier},
+    vue = {prettier},
+    html = {prettier},
+    svelte = {eslint, prettier},
+}
+
+nvim_lsp.efm.setup ({
+  on_attach = on_attach,
+  init_options = {
+    documentFormatting = true,
+    hover = false,
+    documentSymbol = false,
+    codeAction = false,
+    completion = false
+  },
+  filetypes = vim.tbl_keys(efm_languages),
+  settings = {
+    log_file = '~/.config/efm.log',
+    languages = efm_languages,
+    rootMarkers = {".git/", "package.json",},
+  },
+})
+
 EOF
 
 " Lspsaga config
@@ -297,7 +384,7 @@ let g:UltiSnipsJumpBackwardTrigger="<Up>"
 let g:UltiSnipsEditSplit="vertical"
 let g:ultisnips_python_style = "sphinx"
 
-" ALE
+" ALE. @TODO migrate to efm server
 " Linting
 " as long as we use LSP - we can skip python linter, or use directly: 'python': ['pyright'],
 let g:ale_linters = {
@@ -321,12 +408,10 @@ let g:ale_fixers = {
 \   'markdown': ['prettier'],
 \   'html': ['tidy', 'prettier'],
 \   'json': ['jq', 'prettier'],
-\   'javascript': ['prettier'],
 \   'css': ['prettier'],
+\   'scss': ['prettier'],
+\   'less': ['prettier'],
 \}
-" Javascript fixing options
-let g:ale_javascript_prettier_options = '--single-quote --trailing-comma all'
-
 " Python black fixing options.
 " Default black line length is 88
 " You can bind flake linter line length to 88 with:

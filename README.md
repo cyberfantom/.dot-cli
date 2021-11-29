@@ -127,11 +127,13 @@ nvm install --lts --latest-npm --reinstall-packages-from='lts/*'
 Install required npm packages:
 ```bash
 # Install npm packages
-$ npm install -g yarn
-$ npm install -g neovim
+$ npm install -g yarn neovim eslint_d
 $ npm install -g pyright # python language server
+$ npm install -g typescript-language-server # typescript/js language server
 $ npm install --save-dev --save-exact -g prettier
 ```
+
+Install [EFM language server](https://github.com/mattn/efm-langserver) - Multi purpose language server.
 
 Install [Lazygit](https://github.com/jesseduffield/lazygit#installation) - a simple terminal UI for git commands.
 
@@ -261,7 +263,7 @@ Keys | Action | Mode
 ---|---|---
 **F8** | Toggle Tagbar | Normal
 **leader+s** | Insert docstring | Normal
-**leader+f** | Format code | Normal
+**leader+f | space-f** | Format code | Normal
 **Ctrl+n** | Toggle autocompletion | Insert
 **gj** | Go to declaration | Normal
 **gd** | Go to definition (opens in tab) | Normal
