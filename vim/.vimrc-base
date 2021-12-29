@@ -1,8 +1,6 @@
 " Base settings
 set laststatus=2
 set noshowmode
-set encoding=UTF-8
-set mouse=a
 set encoding=utf-8
 set syntax=on
 set cursorline
@@ -23,7 +21,10 @@ set updatetime=1000
 silent! set termguicolors " or try notermguicolors
 set background=dark
 set mouse-=a
+"" Set document rulers and disable for specific filetypes
 let &colorcolumn="80,".join(range(120,999),",")
+au FileType qf setlocal colorcolumn=
+au FileType Trouble setlocal colorcolumn=
 set modifiable
 "" No annoying sound on errors
 set noerrorbells
@@ -80,8 +81,16 @@ noremap <silent> <C-Left> :vertical resize +3<CR>
 noremap <silent> <C-Right> :vertical resize -3<CR>
 noremap <silent> <C-Up> :resize +3<CR>
 noremap <silent> <C-Down> :resize -3<CR>
-" Maximize / restore splits
-nnoremap <silent> <C-m> <C-w>\|<C-w>_
+
+" Toggle diff splits in window
+function! DiffToggle()
+    if &diff
+        windo diffoff
+    else
+        windo diffthis
+    endif
+endfunction
+nnoremap <silent> <leader>/ :call DiffToggle()<CR>
 
 " Add new line(s) in normal mode
 nnoremap n o<Esc>
@@ -159,6 +168,22 @@ map <leader>q1 :q!<CR>
 map <leader>qa :qa!<CR>
 " Fast save
 map <leader>w :w<CR>
+
+" Toggle quickfix list
+" For the location list replace copen/cclose with lopen/lclose, and v:val.quickfix with v:val.loclist
+function! ToggleQuickFix()
+    if empty(filter(getwininfo(), 'v:val.quickfix'))
+        copen
+    else
+        cclose
+    endif
+endfunction
+nnoremap <silent> <leader>x :call ToggleQuickFix()<CR>
+
+" Toggle Maximized window
+let g:maximizer_set_default_mapping = 1
+let g:maximizer_set_mapping_with_bang = 1
+let g:maximizer_default_mapping_key = '<F3>'
 
 " UndoTree
 nnoremap <silent> <leader>u :UndotreeToggle<CR>

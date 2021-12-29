@@ -4,6 +4,11 @@ set ttyfast
 filetype off
 "set writedelay=1
 
+" Plugins preload settings
+" vim-polyglot settings
+let g:polyglot_disabled = ['autoindent']
+autocmd BufEnter * set indentexpr=
+
 " Load plugins
 source ~/.dot-cli/vim/init-plugins.vim
 
@@ -31,12 +36,22 @@ require('telescope').setup{
 }
 EOF
 nnoremap ff <cmd>lua require('telescope.builtin').find_files()<cr>
-nnoremap fg <cmd>lua require('telescope.builtin').live_grep()<cr>
-nnoremap fb <cmd>lua require('telescope.builtin').buffers()<cr>
-nnoremap fh <cmd>lua require('telescope.builtin').help_tags()<cr>
-nnoremap fe <cmd>lua require('telescope.builtin').file_browser()<cr>
-nnoremap fd <cmd>lua require('telescope.builtin').lsp_document_diagnostics()<cr>
+nnoremap fa <cmd>lua require('telescope.builtin').live_grep()<cr>
+" Current buffer find without fuzzy algorytm, works same as live_grep
+" nnoremap fb <cmd>lua require'telescope.builtin'.live_grep{ search_dirs={"%:p"} }<cr>
+nnoremap fb <cmd>lua require("telescope.builtin").current_buffer_fuzzy_find({prompt_title = "Current Buffer Find", sorter = require('telescope.sorters').get_substr_matcher()})<cr>
+" nnoremap fh <cmd>lua require('telescope.builtin').help_tags()<cr>
+nnoremap ft <cmd>lua require('telescope.builtin').file_browser()<cr>
+nnoremap fe <cmd>lua require('telescope.builtin').diagnostics({bufnr=0})<cr>
 nnoremap fl <cmd>lua require('telescope.builtin').builtin()<cr>
+nnoremap fg <cmd>lua require('telescope.builtin').git_bcommits()<cr>
+" Find word under cursor, all files
+nnoremap ca <cmd>lua require('telescope.builtin').grep_string()<cr>
+" Find word under cursor, current buffer
+nnoremap cb <cmd>lua require('telescope.builtin').grep_string({search_dirs={"%:p"}})<cr>
+" Search/replace string in files in quickfix list. fr - any, cr - word under cursor
+nnoremap fr :cfdo %s///g \| update
+nnoremap cr :cfdo %s/<C-r><C-w>//g \| update
 
 " Startify
 let g:startify_lists = [
@@ -115,6 +130,40 @@ nnoremap <C-n> :NvimTreeToggle<CR>
 
 " LSP config
 lua << EOF
+-- Setup nvim-cmp.
+local cmp = require'cmp'
+-- Set completeopt to have a better completion experience
+vim.o.completeopt = 'menu,menuone,noselect'
+
+cmp.setup({
+completion = {
+    autocomplete = false, -- disable auto-completion trigger by default.
+},
+snippet = {
+      expand = function(args)
+        vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
+      end,
+},
+mapping = {
+  ['<C-u>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
+  ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
+  ['<C-n>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
+  ['<C-y>'] = cmp.config.disable, -- Specify `cmp.config.disable` if you want to remove the default `<C-y>` mapping.
+  ['<C-c>'] = cmp.mapping({
+    i = cmp.mapping.abort(),
+    c = cmp.mapping.close(),
+  }),
+  ['<CR>'] = cmp.mapping.confirm({ select = false }),
+},
+sources = {
+  { name = 'nvim_lsp' },
+  { name = 'vsnip' },
+  { name = 'buffer' },
+  { name = 'path' }
+},
+})
+
+-- Configure LSP
 local nvim_lsp = require('lspconfig')
 
 -- Use an on_attach function to only map the following keys
@@ -127,14 +176,20 @@ local on_attach = function(client, bufnr)
   local opts = { noremap=true, silent=true }
 
   -- See `:help vim.lsp.*` for documentation on any of the below functions
+  -- Optional open with: "tab split | lua command" or "vsplit | lua command"
+  buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
   buf_set_keymap('n', 'gj', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-  buf_set_keymap('n', 'gd', '<cmd>tab split | lua vim.lsp.buf.definition()<CR>', opts)
-  buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+  buf_set_keymap('n', 'gd', '<cmd>vsplit | lua vim.lsp.buf.definition()<CR>', opts)
+  buf_set_keymap('n', 'gi', '<cmd>vsplit | lua vim.lsp.buf.implementation()<CR>', opts)
+  buf_set_keymap('n', 'gs', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+  buf_set_keymap('n', 'ge', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
+  buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+  buf_set_keymap('n', '<space>t', '<cmd>vsplit | lua vim.lsp.buf.type_definition()<CR>', opts)
   buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
   buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
   buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
   buf_set_keymap('n', 'gu', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-  buf_set_keymap('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+  buf_set_keymap('n', '<leader>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
 
   -- tsserver specific opts
   if client.name == "tsserver" then
@@ -145,15 +200,45 @@ local on_attach = function(client, bufnr)
   end
 end
 
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+-- Add additional capabilities supported by nvim-cmp
+capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+capabilities.textDocument.completion.completionItem.snippetSupport = true
+capabilities.textDocument.completion.completionItem.resolveSupport = {
+  properties = {'documentation', 'detail', 'additionalTextEdits'}
+}
+
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities.textDocument.completion.completionItem.snippetSupport = true
-local servers = { 'pyright', 'rust_analyzer', 'gopls', 'tsserver' }
+local servers = { 'pyright',
+                  'rust_analyzer',
+                  'gopls',
+                  'tsserver',
+                  'yamlls',
+                  'bashls',
+                  'jsonls',
+                  'cssls',
+                  'html',
+                  'graphql',
+                  'vimls' }
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup {
     capabilities = capabilities,
     on_attach = on_attach,
+    root_dir = function(fname)
+      -- useful patterns: vim.loop.cwd() or vim.fn.getcwd()
+      return nvim_lsp.util.root_pattern("package.json",
+                                        "tsconfig.json",
+                                        "jsconfig.json",
+                                        "setup.py",
+                                        "setup.cfg",
+                                        "pyproject.toml",
+                                        "requirements.txt",
+                                        "Cargo.toml",
+                                        "rust-project.json",
+                                        ".git/")(fname)
+      or nvim_lsp.util.path.dirname(fname);
+    end,
     flags = {
       debounce_text_changes = 300,
       allow_incremental_sync = true
@@ -170,7 +255,7 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
     }
 )
 
--- Formatters and Linters
+-- Formatters and Linters by efm server. As alternative use null-ls
 local eslint = {
   lintCommand = "eslint_d -f visualstudio --stdin --stdin-filename ${INPUT}",
   lintStdin = true,
@@ -179,22 +264,35 @@ local eslint = {
   formatCommand = "eslint_d --fix-to-stdout --stdin --stdin-filename=${INPUT}",
   formatStdin = true
 }
+local markdownlint = {
+  -- disable line-length rule
+  lintCommand = "markdownlint --disable MD013 MD034 -s",
+  lintStdin = true,
+  lintFormats = {"%f:%l %m", "%f:%l:%c %m", "%f: %l: %m"},
+  -- formatCommand = "markdownlint --fix ${INPUT}",
+  -- formatStdin = true
+}
 local prettier = {
   formatCommand = 'prettier --stdin-filepath ${INPUT}',
   formatStdin = true
 }
-local black = { formatCommand = 'black --quiet -', formatStdin = true }
+-- default black line length is 88
+local black = { formatCommand = 'black --line-length 79 --quiet -', formatStdin = true }
+local isort = { formatCommand = 'isort --profile black --quiet -', formatStdin = true }
+local shfmt = { formatCommand = 'shfmt -i 2 -ci -s -bn', formatStdin = true }
 
 local efm_languages = {
+    python = {black, isort},
+    sh = {shfmt},
     yaml = {prettier},
     json = {prettier},
-    markdown = {prettier},
-    javascript = {eslint, prettier},
-    javascriptreact = {eslint, prettier},
-    ["javascript.jsx"] = {eslint, prettier},
-    typescript = {eslint, prettier},
-    typescriptreact = {eslint, prettier},
-    ["typescript.tsx"] = {eslint, prettier},
+    markdown = {markdownlint, prettier},
+    javascript = {eslint},
+    javascriptreact = {eslint},
+    ["javascript.jsx"] = {eslint},
+    typescript = {eslint},
+    typescriptreact = {eslint},
+    ["typescript.tsx"] = {eslint},
     css = {prettier},
     scss = {prettier},
     sass = {prettier},
@@ -202,11 +300,15 @@ local efm_languages = {
     graphql = {prettier},
     vue = {prettier},
     html = {prettier},
-    svelte = {eslint, prettier},
+    svelte = {eslint},
 }
 
 nvim_lsp.efm.setup ({
   on_attach = on_attach,
+  root_dir = function(fname)
+      return nvim_lsp.util.root_pattern(".git/")(fname)
+      or nvim_lsp.util.path.dirname(fname);
+  end,
   init_options = {
     documentFormatting = true,
     hover = false,
@@ -216,84 +318,12 @@ nvim_lsp.efm.setup ({
   },
   filetypes = vim.tbl_keys(efm_languages),
   settings = {
-    log_file = '~/.config/efm.log',
+    --log_file = '~/.config/efm.log',
     languages = efm_languages,
-    rootMarkers = {".git/", "package.json",},
   },
 })
 
 EOF
-
-" Lspsaga config
-lua << EOF
-local saga = require 'lspsaga'
-saga.init_lsp_saga {
-    max_preview_lines = 15,
-    finder_action_keys = {
-        open = 'o', vsplit = 's',split = 'i',quit = 'q',scroll_down = '<C-f>', scroll_up = '<C-u>'
-    },
-    code_action_keys = {
-        quit = 'q',exec = '<CR>'
-    },
-    rename_action_keys = {
-        quit = 'q',exec = '<CR>'
-    },
-}
-
-EOF
-nnoremap <silent><leader>ca <cmd>lua require('lspsaga.codeaction').code_action()<CR>
-vnoremap <silent><leader>ca :<C-U>lua require('lspsaga.codeaction').range_code_action()<CR>
-nnoremap <silent> K <cmd>lua require('lspsaga.hover').render_hover_doc()<CR>
-nnoremap <silent> <C-f> <cmd>lua require('lspsaga.action').smart_scroll_with_saga(1)<CR>
-nnoremap <silent> <C-u> <cmd>lua require('lspsaga.action').smart_scroll_with_saga(-1)<CR>
-nnoremap <silent> gs <cmd>lua require('lspsaga.signaturehelp').signature_help()<CR>
-nnoremap <silent>gr <cmd>lua require('lspsaga.rename').rename()<CR>
-nnoremap <silent> gp <cmd>lua require'lspsaga.provider'.preview_definition()<CR>
-nnoremap <silent>ge <cmd>lua require'lspsaga.diagnostic'.show_line_diagnostics()<CR>
-
-" nvim-compe settings
-lua << EOF
-vim.o.completeopt = "menuone,noselect"
-require'compe'.setup {
-  enabled = true;
-  autocomplete = true;
-  debug = false;
-  min_length = 1;
-  preselect = 'enable';
-  throttle_time = 80;
-  source_timeout = 200;
-  resolve_timeout = 800;
-  incomplete_delay = 400;
-  max_abbr_width = 100;
-  max_kind_width = 100;
-  max_menu_width = 100;
-  documentation = {
-    border = { '', '' ,'', ' ', '', '', '', ' ' }, -- the border option is the same as `|help nvim_open_win|`
-    winhighlight = "NormalFloat:CompeDocumentation,FloatBorder:CompeDocumentationBorder",
-    max_width = 120,
-    min_width = 60,
-    max_height = math.floor(vim.o.lines * 0.3),
-    min_height = 1,
-  };
-
-  source = {
-    path = true;
-    buffer = true;
-    calc = true;
-    nvim_lsp = true;
-    nvim_lua = true;
-    vsnip = true;
-    ultisnips = true;
-    luasnip = true;
-    tmux = true;
-  };
-}
-EOF
-inoremap <silent><expr> <C-n>     compe#complete()
-inoremap <silent><expr> <CR>      compe#confirm('<CR>')
-inoremap <silent><expr> <C-c>     compe#close('<C-e>')
-inoremap <silent><expr> <C-f>     compe#scroll({ 'delta': +4 })
-inoremap <silent><expr> <C-u>     compe#scroll({ 'delta': -4 })
 
 " TreeSitter config
 lua <<EOF
@@ -301,7 +331,7 @@ require'nvim-treesitter.configs'.setup {
   ensure_installed = "maintained",
   highlight = {
     enable = true,
-    additional_vim_regex_highlighting = false,
+    additional_vim_regex_highlighting = true,
   },
   refactor = {
     highlight_definitions = { enable = true },
@@ -319,15 +349,17 @@ EOF
 autocmd FileType python highlight link TSKeywordOperator Keyword
 " or optional use: highlight link pythonTSKeywordOperator Keyword
 
-" Ferret
-" Ferret workflow:
-" 1. Search with :Ack - all project files, :FerretAckWord - word under cursor or :Back - current buffer
-" 2. Navigate quickfix list and delete unwanted occurences
-" 3. Replace with :Acks /foo/bar/
-nmap fa :Ack<space>
-nmap ca :Ack<space><C-r><C-w>
-nmap cb :Back<space><C-r><C-w>
-nmap fr <Plug>(FerretAcks)
+" Gitsigns
+lua <<EOF
+require('gitsigns').setup({
+  current_line_blame = false,
+})
+EOF
+" Gitsigns diffs. See gitsigns-revision for a more complete list of ways to specify bases
+" Diff against the last commit
+nnoremap <silent> <leader>hl :Gitsigns diffthis ~1<CR>
+" Diff against the index
+nnoremap <silent> <leader>hi :Gitsigns diffthis<CR>
 
 " augroup DragQuickfixWindowDown
 "     autocmd!
@@ -345,97 +377,14 @@ let g:qfenter_keymap.vopen = ['<C-v>']
 let g:qfenter_keymap.hopen = ['<C-x>']
 let g:qfenter_keymap.topen = ['<C-t>']
 
-" vim-devicons settings
-" adding to vim-airline's tabline
-let g:webdevicons_enable_airline_tabline = 1
-" disable vim-devicons in vim-airline's statusline
-let g:webdevicons_enable_airline_statusline = 0
-" ctrlp glyphs
-let g:webdevicons_enable_ctrlp = 1
-" Force extra padding in NERDTree so that the filetype icons line up vertically
-let g:WebDevIconsNerdTreeGitPluginForceVAlign = 1
-" enable open and close folder/directory glyph flags (disabled by default with 0)
-let g:DevIconsEnableFoldersOpenClose = 1
-
-" vim-gitgutter
-let g:gitgutter_map_keys = 0
-let g:gitgutter_sign_allow_clobber = 1
-let g:gitgutter_preview_win_floating = 1
-nmap ghp <Plug>(GitGutterPreviewHunk)
-
-" Tagbar
-nmap <F8> :TagbarToggle<CR>
+" Vista bar
+nmap <F8> :Vista!!<CR>
+let g:vista_default_executive = 'nvim_lsp'
 
 " vim-doge (doc gen) keymap
 " navigate TODO <Tab> <S-Tab>
 let g:doge_mapping = "<Leader>s"
 let g:doge_doc_standard_python = 'sphinx'
-
-" ultisnips settings
-" Snippets workflow:
-" 1. Start type keyword
-" 2. Select snippet in expanded list
-" 3. Expand snippet with UltiSnipsExpandTrigger (default <C-s>)
-let g:UltiSnipsExpandTrigger="<C-s>"
-let g:UltiSnipsListSnippets="<C-l>"
-let g:UltiSnipsJumpForwardTrigger="<Down>"
-let g:UltiSnipsJumpBackwardTrigger="<Up>"
-" If you want :UltiSnipsEdit to split your window.
-let g:UltiSnipsEditSplit="vertical"
-let g:ultisnips_python_style = "sphinx"
-
-" ALE. @TODO migrate to efm server
-" Linting
-" as long as we use LSP - we can skip python linter, or use directly: 'python': ['pyright'],
-let g:ale_linters = {
-\   'vim': ['vint'],
-\   'yaml': ['yamllint'],
-\   'sh': ['shellcheck'],
-\   'markdown': ['proselint'],
-\   'text': ['proselint'],
-\   'html': ['tidy'],
-\   'json': ['jq'],
-\}
-" YAML Linting options
-let g:ale_yaml_yamllint_options='-d "{extends: default, rules: {document-start: disable}}"'
-
-" Fixing
-let g:ale_fixers = {
-\   '*': ['trim_whitespace'],
-\   'python': ['black', 'isort'],
-\   'yaml': ['prettier'],
-\   'sh': ['shfmt'],
-\   'markdown': ['prettier'],
-\   'html': ['tidy', 'prettier'],
-\   'json': ['jq', 'prettier'],
-\   'css': ['prettier'],
-\   'scss': ['prettier'],
-\   'less': ['prettier'],
-\}
-" Python black fixing options.
-" Default black line length is 88
-" You can bind flake linter line length to 88 with:
-" let g:ale_python_flake8_options = '--max-line-length=88'
-" or setup black line length to default 79:
-let g:ale_python_black_options = '--line-length 79'
-
-" Isort options.
-let g:ale_python_isort_options = '--profile black'
-
-" Only run linters named in ale_linters settings.
-let g:ale_linters_explicit = 1
-" Set this variable to 1 to fix files when you save them.
-let g:ale_fix_on_save = 0
-" Disable warnings about trailing whitespace
-let b:ale_warn_about_trailing_whitespace = 0
-
-let g:ale_set_loclist = 1
-let g:ale_keep_list_window_open = 0
-let g:ale_list_window_size = 15
-let g:ale_list_vertical = 1
-
-" ALE keymap
-nmap <silent> <leader>f :ALEFix<CR>
 
 " Preview/Toggle markdown in browser
 nmap <silent> <leader>m <Plug>MarkdownPreviewToggle
@@ -471,13 +420,13 @@ map <silent> <leader>`1 :lcd %:p:h<CR>:vsplit \| term<CR>
 " vertical split
 map <silent> <leader>g :lcd %:p:h<CR>:vsplit \| term lazygit<CR>
 " vertical split maximized
-map <silent> <leader>gf :lcd %:p:h<CR>:vsplit \| <Enter><CR>:term lazygit<CR>
+map <silent> <leader>gf :lcd %:p:h<CR>:vsplit \| :MaximizerToggle<CR>:term lazygit<CR>
 
 " Open Lazydocker in:
 " vertical split
 map <silent> <leader>c :vsplit \| term lazydocker<CR>
 " vertical split maximized
-map <silent> <leader>cf :vsplit \| <Enter><CR>:term lazydocker<CR>
+map <silent> <leader>cf :vsplit \| :MaximizerToggle<CR> :term lazydocker<CR>
 
 " Load .lvimrc without confirmation
 let g:localvimrc_ask = 0

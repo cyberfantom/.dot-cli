@@ -8,9 +8,9 @@ call vundle#begin()
 Plugin 'gmarik/vundle'
 Plugin 'tpope/vim-surround'
 Plugin 'sheerun/vim-polyglot'
-Plugin 'tmux-plugins/vim-tmux-focus-events'
 Plugin 'morhetz/gruvbox'
 Plugin 'Yggdroot/indentLine'
+Plugin 'szw/vim-maximizer'
 Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'christoomey/vim-system-copy'
 Plugin 'tpope/vim-commentary'
@@ -24,9 +24,6 @@ filetype plugin indent on
 source ~/.dot-cli/vim/.vimrc-base
 
 " Light version specific config:
-
-" Restore splits
-nnoremap <silent> <C-m>, <C-w>=
 
 " Open native terminal (same path as current opened file)
 " horizontal

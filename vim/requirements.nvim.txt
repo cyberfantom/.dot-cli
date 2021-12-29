@@ -1,6 +1,3 @@
 pynvim
 isort
 black
-yamllint
-proselint
-vim-vint
