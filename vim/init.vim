@@ -62,67 +62,93 @@ let g:startify_lists = [
           \ ]
 
 " nvim-tree settings
-let g:nvim_tree_indent_markers = 1
-let g:nvim_tree_highlight_opened_files = 1
-let g:nvim_tree_add_trailing = 1
-let g:nvim_tree_git_hl = 1
-let g:nvim_tree_respect_buf_cwd = 0
-let g:nvim_tree_show_icons = {
-    \ 'git': 0,
-    \ 'folders': 1,
-    \ 'files': 1,
-    \ 'folder_arrows': 1,
-    \ }
-let g:nvim_tree_icons = {
-    \ 'default': '',
-    \ 'symlink': '',
-    \ 'git': {
-    \   'unstaged': "✗",
-    \   'staged': "✓",
-    \   'unmerged': "",
-    \   'renamed': "➜",
-    \   'untracked': "•",
-    \   'deleted': "",
-    \   'ignored': "◌"
-    \   },
-    \ 'folder': {
-    \   'arrow_open': "",
-    \   'arrow_closed': "",
-    \   'default': "",
-    \   'open': "",
-    \   'empty': "",
-    \   'empty_open': "",
-    \   'symlink': "",
-    \   'symlink_open': "",
-    \   },
-    \   'lsp': {
-    \     'hint': "",
-    \     'info': "",
-    \     'warning': "",
-    \     'error': "",
-    \   }
-    \ }
 lua << EOF
 require'nvim-tree'.setup {
     open_on_setup = false,
-    auto_close  = true,
     hijack_cursor = false,
     open_on_tab = true,
     disable_netrw  = false,
     hijack_netrw   = false,
     update_cwd     = false,
+    respect_buf_cwd = false,
+    open_on_tab = true,
     update_focused_file = {
         enable = true,
     },
     filters = {
-      custom = {'.git', 'node_modules', '.pyc$', '.pyo$', '.egg-info$', '__pycache__', '.venv', 'venv'},
+      custom = {'.git$', 'node_modules', '.pyc$', '.pyo$', '.egg-info$', '__pycache__', '.venv', 'venv'},
+      dotfiles = false,
     },
     view = {
     width = 42,
     side = 'left',
-    auto_resize = false,
-  }
+    adaptive_size = false,
+  },
+  renderer = {
+    add_trailing = true,
+    group_empty = false,
+    highlight_git = true,
+    highlight_opened_files = "name",
+    root_folder_modifier = ":~",
+    indent_markers = {
+      enable = true,
+      icons = {
+        corner = "└ ",
+        edge = "│ ",
+        none = "  ",
+      },
+    },
+    icons = {
+      webdev_colors = true,
+      git_placement = "before",
+      padding = " ",
+      symlink_arrow = " ➛ ",
+      show = {
+        file = true,
+        folder = true,
+        folder_arrow = true,
+        git = true,
+      },
+      glyphs = {
+        default = "",
+        symlink = "",
+        folder = {
+          arrow_closed = "",
+          arrow_open = "",
+          default = "",
+          open = "",
+          empty = "",
+          empty_open = "",
+          symlink = "",
+          symlink_open = "",
+        },
+        git = {
+          unstaged = "✗",
+          staged = "✓",
+          unmerged = "",
+          renamed = "➜",
+          untracked = "★",
+          deleted = "",
+          ignored = "◌",
+        },
+      },
+    },
+    special_files = { "Cargo.toml", "Makefile", "README.md", "readme.md" },
+  },
 }
+EOF
+
+" Autoclose nvim-tree
+" solution from from https://github.com/kyazdani42/nvim-tree.lua/issues/1368#issuecomment-1195557960
+lua << EOF
+vim.api.nvim_create_autocmd("BufEnter", {
+  group = vim.api.nvim_create_augroup("NvimTreeClose", {clear = true}),
+  pattern = "NvimTree_*",
+  callback = function()
+    local layout = vim.api.nvim_call_function("winlayout", {})
+    if layout[1] == "leaf" and vim.api.nvim_buf_get_option(vim.api.nvim_win_get_buf(layout[2]), "filetype") == "NvimTree" and layout[3] == nil then vim.cmd("confirm quit") end
+  end
+})
 EOF
 
 highlight NvimTreeIndentMarker guifg=#555756
@@ -144,7 +170,7 @@ snippet = {
         vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
       end,
 },
-mapping = {
+mapping =  cmp.mapping.preset.insert({
   ['<C-u>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
   ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
   ['<C-n>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
@@ -154,13 +180,13 @@ mapping = {
     c = cmp.mapping.close(),
   }),
   ['<CR>'] = cmp.mapping.confirm({ select = false }),
-},
-sources = {
+}),
+sources = cmp.config.sources({
   { name = 'nvim_lsp' },
   { name = 'vsnip' },
   { name = 'buffer' },
   { name = 'path' }
-},
+}),
 })
 
 -- Configure LSP
@@ -328,19 +354,10 @@ EOF
 " TreeSitter config
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
-  ensure_installed = "maintained",
+  ensure_installed = "all",
   highlight = {
     enable = true,
     additional_vim_regex_highlighting = true,
-  },
-  refactor = {
-    highlight_definitions = { enable = true },
-    smart_rename = {
-      enable = true,
-      keymaps = {
-        smart_rename = "grr",
-      },
-    },
   },
 
 }
@@ -406,15 +423,15 @@ if has('nvim')
 endif
 
 " Floaterm
-let g:floaterm_autoclose=2
-nnoremap <silent> <leader>t :FloatermToggle<CR>
-tnoremap <silent> <leader>t <C-\><C-n>:FloatermToggle<CR>
+" let g:floaterm_autoclose=2
+" nnoremap <silent> <leader>t :FloatermToggle<CR>
+" tnoremap <silent> <leader>t <C-\><C-n>:FloatermToggle<CR>
 
 " Open native terminal (same path as current opened file)
 " horizontal
-map <silent> <leader>` :lcd %:p:h<CR>:split \| term<CR>
+map <silent> <leader>th :lcd %:p:h<CR>:split \| term<CR>
 " vertical
-map <silent> <leader>`1 :lcd %:p:h<CR>:vsplit \| term<CR>
+map <silent> <leader>tv :lcd %:p:h<CR>:vsplit \| term<CR>
 
 " Open Lazygit in:
 " vertical split
@@ -431,3 +448,5 @@ map <silent> <leader>cf :vsplit \| :MaximizerToggle<CR> :term lazydocker<CR>
 " Load .lvimrc without confirmation
 let g:localvimrc_ask = 0
 
+" Load user config
+call SourceIfExists("~/.dotclinvim.vim")

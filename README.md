@@ -46,11 +46,12 @@ Extra usage information you can find in [Notes](NOTES.md).
 | **cv**                                     | Paste from system buffer                      | Normal        | ALL          |
 | **gcc / gc**                               | Comment line / selected text                  | Normal/Visual | ALL          |
 | **leader+ESC** in terminal                 | Exit from terminal insert mode                | Insert        | ALL          |
-| **leader+\`**                              | Open horizontal terminal (file parent dir)    | Normal        | ALL          |
-| **leader+\`1**                             | Open vertical terminal (file parent dir)      | Normal        | ALL          |
+| **leader+th**                              | Open horizontal terminal (file parent dir)    | Normal        | ALL          |
+| **leader+tv**                              | Open vertical terminal (file parent dir)      | Normal        | ALL          |
 | **leader+q**                               | Quick quit (:q)                               | Normal        | ALL          |
 | **leader+q1**                              | Quick quit without saving (:q!)               | Normal        | ALL          |
 | **leader+qa**                              | Quit all without saving (:qa!)                | Normal        | ALL          |
+| **leader+qw**                              | Quit all buffers in current window            | Normal        | ALL          |
 | **leader+w**                               | Quick save (:w)                               | Normal        | ALL          |
 | **leader+x**                               | Toggle quickfix list                          | Normal        | ALL          |
 | **leader+u**                               | Toggle UndoTree                               | Normal        | ALL          |
@@ -65,12 +66,11 @@ Extra usage information you can find in [Notes](NOTES.md).
 | **Ctrl+n**                                                   | Toggle files tree                                                                                        | Normal        |
 | **Enter** in quickfix/location list                          | Open usage in previous buffer                                                                            | Normal        |
 | **Ctrl+v / x / t** in quickfix/location/Files tree/Telescope | Open in v: vertical split, x: horizontal split, t: tab                                                   | Normal        |
-| **leader+t**                                                 | Open Floaterm (project root)                                                                             | Normal        |
 | **leader+g**                                                 | Open Lazygit in vertical split                                                                           | Normal        |
 | **leader+gf**                                                | Open Lazygit maximized                                                                                   | Normal        |
 | **leader+c**                                                 | Open Lazydocker in vertical split                                                                        | Normal        |
 | **leader+cf**                                                | Open Lazydocker maximized                                                                                | Normal        |
-| **leader+m**                                                 | Open markdown preview in browser                                                                         | Normal        |
+| **leader+m**                                                 | Toggle markdown preview in browser                                                                       | Normal        |
 | **leader+hi**                                                | Gitsigns diff file against the index                                                                     | Normal        |
 | **leader+hl**                                                | Gitsigns diff file against the last commit                                                               | Normal        |
 | **leader+hs**                                                | Gitsigns stage hunk                                                                                      | Normal/Visual |

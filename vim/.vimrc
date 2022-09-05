@@ -27,6 +27,9 @@ source ~/.dot-cli/vim/.vimrc-base
 
 " Open native terminal (same path as current opened file)
 " horizontal
-map <silent> <leader>` :lcd %:p:h<CR>:term ++close<CR>
+map <silent> <leader>th :lcd %:p:h<CR>:term ++close<CR>
 " vertical
-map <silent> <leader>`1 :lcd %:p:h<CR>:vert term ++close<CR>
+map <silent> <leader>tv :lcd %:p:h<CR>:vert term ++close<CR>
+
+" Load user config
+call SourceIfExists("~/.dotclivim.vim")

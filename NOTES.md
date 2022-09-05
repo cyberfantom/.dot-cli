@@ -51,6 +51,7 @@ Check https://editorconfig.org/ to get more info.
 ## Local .vimrc
 
 To override default settings Neovim IDE uses [localvimrc plugin](https://github.com/embear/vim-localvimrc).
+It searches for all ".lvimrc" files from the directory of the file up to the root directory.
 Example `.lvimrc` to override default python binary:
 
 ```vimrc
@@ -58,3 +59,7 @@ let g:python3_host_prog = '/path/to/python/binary'
 ```
 
 Check the plugin "readme" to get more info.
+
+## Local user overrides for Vim and Neovim config
+
+Files `~/.dot-vim.vim` and `~/.dot-nvim.vim` are used to override the global settings of Vim and Neovim.

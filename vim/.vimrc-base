@@ -19,7 +19,7 @@ set formatoptions+=1
 set autoread
 set updatetime=1000
 silent! set termguicolors " or try notermguicolors
-set background=dark
+set background=dark "" light | dark
 set mouse-=a
 "" Set document rulers and disable for specific filetypes
 let &colorcolumn="80,".join(range(120,999),",")
@@ -124,6 +124,8 @@ set fillchars+=vert:▌ " ASCII 221 or ║ - ASCII 186
 set t_Co=256
 set t_ut=
 let g:gruvbox_italic=1
+let g:gruvbox_contrast_dark="medium"
+let g:gruvbox_contrast_light="medium"
 silent! colorscheme gruvbox
 
 " Indent Line
@@ -160,12 +162,14 @@ map <silent> <C-h> :set list!<CR> \| :call ConcealLevelToggle()<CR>
 " Exit from terminal insert mode with leader-ESC
 tnoremap <leader><Esc> <C-\><C-n>
 
-" Fast window close
+" Fast buffer close
 map <leader>q :q<CR>
-" Fast window close without saving
+" Fast buffer close without saving
 map <leader>q1 :q!<CR>
-" Fast close all windows without saving
+" Fast close all buffers without saving
 map <leader>qa :qa!<CR>
+" Fast close all buffers in current window
+map <leader>qw :windo q<CR>
 " Fast save
 map <leader>w :w<CR>
 
@@ -179,6 +183,14 @@ function! ToggleQuickFix()
     endif
 endfunction
 nnoremap <silent> <leader>x :call ToggleQuickFix()<CR>
+
+" Function to source only if file exists {
+function! SourceIfExists(file)
+  if filereadable(expand(a:file))
+    exe 'source' a:file
+  endif
+endfunction
+" }
 
 " Toggle Maximized window
 let g:maximizer_set_default_mapping = 1
