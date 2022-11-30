@@ -2,12 +2,12 @@
 
 ## Notes before install
 
-Depends of what do you want to install, here can be a various options. Default setup (`install.sh` without parameters) is a Vim Regular setup + Tmux. Note, that installation script only deploying configuration and installing plugins plus python packages.
+Depends of what do you want to install, here can be a various options. Default setup (`install.sh` without parameters) is a Vim setup + Shell functions. Note, that installation script only deploying configuration and installing plugins plus python packages.
 
 **Tmux** configuration requires **Tmux >= 2.6**. If you don't have it in your package manager, follow [Install required packages](#install-required-packages),
 then [Build latest Tmux from source](#build-latest-tmux-from-source).
 
-**Vim Regular** requires only **Vim 8.x+** with Python support, so you can use (mostly) Vim from your system package manager and just follow [Install .dot-cli environment](#install-.dot-cli-environment)
+**Vim** setup requires only **Vim 8.x+** with Python support, so you can use (mostly) Vim from your system package manager and just follow [Install .dot-cli environment](#install-.dot-cli-environment)
 
 **Neovim IDE** requires **Neovim 0.7.x+** with LSP. If you don't have it in your package manager, follow [Install required packages](#install-required-packages),
 then [Build latest Neovim from source and install for current user](#build-latest-neovim-from-source-and-install-for-current-user).
@@ -121,14 +121,15 @@ $ npm update -g
 
 ## Install .dot-cli environment
 
-- `install.sh` without options - install just **Vim Regular** + **Tmux**
-- `--neovim` option installs **Vim Regular** + **Tmux** + **Neovim IDE**
+- `install.sh` without options - install default setup: **Vim** + **Shell functions**
+- `--neovim` option installs **Neovim IDE**
+- `--tmux` option installs **Tmux** config.
 - `--kitty` option installs **Kitty** terminal config to `~/.config/kitty/`
 - `--starship` option installs **Starship** config to `~/.config/starship.toml`.
 
 ```bash
 git clone https://github.com/cyberfantom/.dot-cli.git ~/.dot-cli && cd ~/
-.dot-cli/install.sh [--neovim] [--kitty] [--starship]
+.dot-cli/install.sh [--neovim] [--tmux] [--kitty] [--starship]
 ```
 
 Next, just login again or run:

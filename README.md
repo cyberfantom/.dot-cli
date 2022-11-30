@@ -1,12 +1,12 @@
 # .dot-cli
 
-This environment has been made mostly for myself for every day work in the Linux command line. Contains pre-configured VIM/Neovim and Tmux.
-Vim exists here in two states:
+This environment has been made mostly for myself for every day work in the Linux command line. Contains pre-configured Vim, Neovim IDE, Shell functions and Tmux.
 
-- **Vim Regular**.
+- **Vim**.
   Running with regular command `vim` and using a default file `~/.vimrc`. Useful for fast text edit or deploy to remote servers with minimal requirements.
 - **Neovim IDE**. IDE-like setup for Python, Go, Typescript and Rust.
   Running with command `nvim` and using a default file `~/.config/nvim/init.vim`. Contains same setup as Vim Regular + linters, code formaters, autocomplete, etc.
+- **Shell functions**. Collection of shell commands that help to manage SSH connections, K8S clusters, AWS profiles, etc.
 
 Also here is a file `.ideavimrc` for IdeaVim emulation plugin for IntelliJ Platform-based IDEs. The goal is sharing the same key bindings (as possible) in both Vim and IntelliJ IDEs.
 
@@ -129,3 +129,11 @@ Default Tmux prefix is **Ctrl + b**.
 | **prefix** + **r**                 | Reload Tmux config                                        |
 | **prefix** + **@**                 | Join pane to selected window                              |
 | **prefix** + **Ctrl-s**/**Ctrl-r** | Save/restore session (tmux-resurrect plugin defaults)     |
+
+### Shell functions
+
+More info:
+
+```bash
+funclist
+```

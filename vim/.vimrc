@@ -1,24 +1,17 @@
-set nocompatible
-filetype off
-
 " Light version specific plugins
-set rtp+=~/.vim/bundle/vundle/
-call vundle#begin()
-" Vundle Plugins
-Plugin 'gmarik/vundle'
-Plugin 'tpope/vim-surround'
-Plugin 'sheerun/vim-polyglot'
-Plugin 'morhetz/gruvbox'
-Plugin 'Yggdroot/indentLine'
-Plugin 'szw/vim-maximizer'
-Plugin 'ctrlpvim/ctrlp.vim'
-Plugin 'christoomey/vim-system-copy'
-Plugin 'tpope/vim-commentary'
-Plugin 'tmhedberg/SimpylFold'
-Plugin 'psliwka/vim-smoothie'
-Plugin 'mbbill/undotree'
-call vundle#end()
-filetype plugin indent on
+call plug#begin()
+Plug 'tpope/vim-surround'
+Plug 'sheerun/vim-polyglot'
+Plug 'morhetz/gruvbox'
+Plug 'Yggdroot/indentLine'
+Plug 'szw/vim-maximizer'
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'christoomey/vim-system-copy'
+Plug 'tpope/vim-commentary'
+Plug 'tmhedberg/SimpylFold'
+Plug 'psliwka/vim-smoothie'
+Plug 'mbbill/undotree'
+call plug#end()
 
 " Load base config
 source ~/.dot-cli/vim/.vimrc-base

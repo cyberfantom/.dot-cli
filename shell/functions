@@ -1,0 +1,89 @@
+#!/usr/bin/env sh
+
+export SHELL_FUNC_PATH=$(realpath "${BASH_SOURCE:-$0}")
+
+###DOC: funclist - List defined shell functions
+funclist() {
+  awk '{ if ($1 ~ /^###DOC:/) print $0 }' $SHELL_FUNC_PATH | sed 's/###DOC: //'
+}
+
+# SSH tools
+
+# Print info of given ssh host
+_ssh_info() {
+  host_info=$(ssh -tt -G $1)
+  agent_info=$(ssh-add -l)
+  echo "$host_info" | grep hostname | head -n 1
+  echo "$host_info" | grep user | head -n 1
+  echo "$host_info" | grep port | head -n 1
+  echo "$host_info" | grep identityfile | head -n 1
+  echo "$host_info" | grep localforward
+  echo -e "\n[ SSH agent loaded keys: ]"
+  echo "$agent_info"
+}
+# another way to make visible in fzf preview _ssh_info
+# export -f _ssh_info
+
+###DOC: sshlist - List and connect to ssh aliases defined in ~/.ssh/config
+sshlist() {
+  # Parse ssh config file: Get only first host alias, no wildcard config.
+  complete_ssh=$(grep -P '^Host ([^*]+)$' $HOME/.ssh/config | sed 's/Host //' | awk '{ print $1 }')
+  printf '%s\n' ${complete_ssh[@]} | fzf --border --info=inline \
+    --preview='source $SHELL_FUNC_PATH; _ssh_info {}' | xargs -o -I{} ssh -tt {}
+}
+
+# optional fzf completion customization
+_fzf_comprun() {
+  local command=$1
+  shift
+
+  case "$command" in
+    export | unset) fzf "$@" --preview "eval 'echo \$'{}" ;;
+    ssh) fzf "$@" --preview 'source $SHELL_FUNC_PATH; _ssh_info {}' ;;
+    *) fzf "$@" --preview "if [ ! -d "{}" ]; then if [ -f "{}" ]; then bat --style=numbers --color=always --line-range :500 {}; fi; else tree -C {} | head -200; fi" ;;
+  esac
+}
+
+# Kube tools
+# https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/
+# https://kubernetes.io/docs/tasks/access-application-cluster/configure-access-multiple-clusters/
+# TODO : kubectl config view --flatten > ~/.kube/config
+
+###DOC: kubeset - Set KUBECONFIG env with merging multiple kubeconfig files in ~/.kube/clusters/
+kubeset() {
+  local path_prefix="$HOME/.kube/clusters/"
+  export KUBECONFIG=$(find -L $path_prefix -type f | sed ':a;N;s/\n/:/;ba')
+}
+
+###DOC: kubelist - Set KUBECONFIG env with single kubeconfig file in ~/.kube/clusters/
+kubelist() {
+  local path_prefix="$HOME/.kube/clusters/"
+  local path_prefix_escaped=$(echo "${path_prefix//\//\\/}")
+  local kubeconfig=$(find -L $path_prefix -type f | sed "s/$path_prefix_escaped//" \
+    | fzf --preview "bat --style=numbers --color=always --line-range :500 $path_prefix{}")
+  if [ ! -z "$kubeconfig" ]; then
+    export KUBECONFIG="$path_prefix$kubeconfig"
+  fi
+}
+
+###DOC: kubectx - List and switch k8s contexts
+kubectx() {
+  kubectl config get-contexts -o name | fzf | xargs kubectl config use-context
+}
+
+###DOC: kubens - List and switch k8s namespaces
+kubens() {
+  local ns=$(kubectl get namespace --no-headers=true -o custom-columns=NAME:.metadata.name | fzf)
+  kubectl config set-context --current --namespace=$ns
+}
+
+# AWS tools
+
+###DOC: awslist - Set AWS_PROFILE by parsing AWS named profiles in file ~/.aws/credentials
+awslist() {
+  local credentials_path="$HOME/.aws/credentials"
+  local profile=$(awk '{ if ($1 ~ /^\[/) print $1 }' $credentials_path | sed 's/[][]//g' | fzf)
+  if [ ! -z "$profile" ]; then
+    export AWS_PROFILE=$profile
+  fi
+}
