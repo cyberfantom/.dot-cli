@@ -4,15 +4,13 @@ This environment has been made mostly for myself for every day work in the Linux
 
 - **Vim**.
   Running with regular command `vim` and using a default file `~/.vimrc`. Useful for fast text edit or deploy to remote servers with minimal requirements.
-- **Neovim IDE**. IDE-like setup for Python, Go, Typescript and Rust.
+- **Neovim IDE**. IDE-like setup for Python, Go, Typescript, Lua, C/C++ and Rust.
   Running with command `nvim` and using a default file `~/.config/nvim/init.vim`. Contains same setup as Vim Regular + linters, code formaters, autocomplete, etc.
 - **Shell functions**. Collection of shell commands that help to manage SSH connections, K8S clusters, AWS profiles, etc.
 
-Also here is a file `.ideavimrc` for IdeaVim emulation plugin for IntelliJ Platform-based IDEs. The goal is sharing the same key bindings (as possible) in both Vim and IntelliJ IDEs.
-
 ## Requirements
 
-- Vim 8.x / Neovim 0.6.x
+- Vim 8.x / Neovim 0.8.x
 - Tmux >= 2.6
 - Node.js (for Neovim IDE)
 - Git
@@ -35,6 +33,7 @@ Extra usage information you can find in [Notes](NOTES.md).
 | ------------------------------------------ | --------------------------------------------- | ------------- | ------------ |
 | **Ctrl+p**                                 | Toggle CtrlP                                  | Normal        | Vim          |
 | **F3**                                     | Toggle maximized/minimized window view        | Normal        | ALL          |
+| **Space**                                  | Insert space in normal mode (after cursor)    | Normal        | ALL          |
 | **Ctrl+i**                                 | Toggle indent lines                           | Normal        | ALL          |
 | **Ctrl+h**                                 | Toggle hidden symbols                         | Normal        | ALL          |
 | **leader+/**                               | Toggle diff mode for splits in current window | Normal        | ALL          |
@@ -54,7 +53,6 @@ Extra usage information you can find in [Notes](NOTES.md).
 | **leader+qw**                              | Quit all buffers in current window            | Normal        | ALL          |
 | **leader+w**                               | Quick save (:w)                               | Normal        | ALL          |
 | **leader+x**                               | Toggle quickfix list                          | Normal        | ALL          |
-| **leader+u**                               | Toggle UndoTree                               | Normal        | ALL          |
 | **Shift-Up**, **Ctrl-f** or **PageUp**     | Scroll one screen up                          | Normal        | ALL          |
 | **Shift-Down**, **Ctrl-b** or **PageDown** | Scroll one screen down                        | Normal        | ALL          |
 | **Ctrl-u** / **Ctrl-d**                    | Scroll half screen up / down                  | Normal        | ALL          |
@@ -73,6 +71,8 @@ Extra usage information you can find in [Notes](NOTES.md).
 | **leader+m**                                                 | Toggle markdown preview in browser                                                                       | Normal        |
 | **leader+hi**                                                | Gitsigns diff file against the index                                                                     | Normal        |
 | **leader+hl**                                                | Gitsigns diff file against the last commit                                                               | Normal        |
+| **leader+ht**                                                | Gitsigns toggle                                                                                          | Normal        |
+| **leader+hr**                                                | Gitsigns refresh all buffers                                                                             | Normal        |
 | **leader+hs**                                                | Gitsigns stage hunk                                                                                      | Normal/Visual |
 | **leader+hu**                                                | Gitsigns undo stage hunk                                                                                 | Normal        |
 | **leader+hr**                                                | Gitsigns reset hunk                                                                                      | Normal/Visual |
@@ -85,10 +85,10 @@ Extra usage information you can find in [Notes](NOTES.md).
 | **ff**                                                       | Telescope fuzzy find files.                                                                              | Normal        |
 | **fa**                                                       | Telescope live grep all project files.                                                                   | Normal        |
 | **fb**                                                       | Telescope live grep current buffer.                                                                      | Normal        |
-| **ft**                                                       | Telescope file browser.                                                                                  | Normal        |
 | **fe**                                                       | Telescope LSP diagnostics.                                                                               | Normal        |
 | **fl**                                                       | Telescope list of all builtins.                                                                          | Normal        |
 | **fg**                                                       | Telescope current buffer commits. **Ctrl+v/x/t** - opens diff in vertical/horizontal split or tab        | Normal        |
+| **fo**                                                       | Telescope opened buffers.                                                                                | Normal        |
 | **ca**                                                       | Telescope word under cursor in all project files                                                         | Normal        |
 | **cb**                                                       | Telescope word under cursor in opened buffers                                                            | Normal        |
 | **fr**                                                       | Replace occurrences in quickfix list with `:cfdo` and native search/replace: `%s/search/replace/g`       | Normal        |
@@ -98,9 +98,10 @@ Extra usage information you can find in [Notes](NOTES.md).
 
 | Keys                | Action                                                 | Mode   |
 | ------------------- | ------------------------------------------------------ | ------ |
-| **F8**              | Toggle Vista bar                                       | Normal |
+| **F8**              | Toggle symbols bar                                     | Normal |
 | **leader+s**        | Insert docstring                                       | Normal |
 | **leader+f**        | Format code                                            | Normal |
+| **leader+ca**       | Code actions                                           | Normal |
 | **Ctrl+n**          | Toggle autocompletion                                  | Insert |
 | **gj**              | Go to declaration                                      | Normal |
 | **gd**              | Go to definition (opens in tab)                        | Normal |
@@ -128,6 +129,8 @@ Default Tmux prefix is **Ctrl + b**.
 | **y** in copy mode                 | Vim-style selected text copy to buffers (Tmux + system)   |
 | **prefix** + **r**                 | Reload Tmux config                                        |
 | **prefix** + **@**                 | Join pane to selected window                              |
+| **prefix** + **S**                 | Create new session                                        |
+| **prefix** + **K**                 | Kill current session                                      |
 | **prefix** + **Ctrl-s**/**Ctrl-r** | Save/restore session (tmux-resurrect plugin defaults)     |
 
 ### Shell functions

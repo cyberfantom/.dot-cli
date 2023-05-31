@@ -9,7 +9,7 @@ then [Build latest Tmux from source](#build-latest-tmux-from-source).
 
 **Vim** setup requires only **Vim 8.x+** with Python support, so you can use (mostly) Vim from your system package manager and just follow [Install .dot-cli environment](#install-.dot-cli-environment)
 
-**Neovim IDE** requires **Neovim 0.7.x+** with LSP. If you don't have it in your package manager, follow [Install required packages](#install-required-packages),
+**Neovim IDE** requires **Neovim 0.8.x+** with LSP. If you don't have it in your package manager, follow [Install required packages](#install-required-packages),
 then [Build latest Neovim from source and install for current user](#build-latest-neovim-from-source-and-install-for-current-user).
 
 When you will have installed a right versions of **Tmux** and **Vim/Neovim** , just follow [Install .dot-cli environment](#install-.dot-cli-environment)
@@ -49,30 +49,34 @@ instructions.
 
 - [Universal Ctags](https://github.com/universal-ctags/ctags)
 
-- [shfmt](https://github.com/mvdan/sh) - a shell scripts format tool
+- [shfmt](https://github.com/mvdan/sh) - A shell scripts format tool
+
+- [shellcheck](https://github.com/koalaman/shellcheck) - A shell script static analysis tool
 
 - [Rust analyzer](https://github.com/rust-analyzer/rust-analyzer) - Rust language server.
 
-- [EFM language server](https://github.com/mattn/efm-langserver) - Multi purpose language server.
+- [Lua language server](https://github.com/LuaLS/lua-language-server) - Lua language server.
 
-- [Lazygit](https://github.com/jesseduffield/lazygit#installation) - a simple terminal UI for git commands.
+- [clangd](https://clangd.llvm.org) - C/C++ language server.
 
-- [Lazydocker](https://github.com/jesseduffield/lazydocker#installation) - a simple terminal UI for both docker and docker-compose.
+- [astyle](https://astyle.sourceforge.net) - A formatter tool for C, C++, C++/CLI, Objective C, C#, and Java.
 
-- [ripgrep](https://github.com/BurntSushi/ripgrep#installation) - fast search tool.
+- [cppcheck](https://github.com/danmar/cppcheck) - C/C++ static analysis tool.
 
-- [FZF](https://github.com/junegunn/fzf) - command-line fuzzy finder.
+- [Lazygit](https://github.com/jesseduffield/lazygit#installation) - A simple terminal UI for git commands.
 
-- [Kitty](https://sw.kovidgoyal.net/kitty/binary/) - The fast, feature-rich, GPU based terminal emulator. Kitty configuration included in this repo.
+- [Lazydocker](https://github.com/jesseduffield/lazydocker#installation) - A simple terminal UI for both docker and docker-compose.
 
-- [Starship](https://starship.rs/) - The fast and customizable prompt for any shell. Starship configuration included in this repo.
+- [ripgrep](https://github.com/BurntSushi/ripgrep#installation) - Fast search tool.
+
+- [FZF](https://github.com/junegunn/fzf) - Command-line fuzzy finder.
 
 In Arch Linux these tools are present in the repositories (standard and AUR) so they can be installed using the package manager:
 
 ```bash
-sudo pacman -S ctags shfmt rust-analyzer lazygit ripgrep fzf kitty starship
+sudo pacman -S ctags shfmt shellcheck rust-analyzer lazygit ripgrep fzf lua-language-server cppcheck clang astyle
 # AUR packages
-yay -S efm-langserver lazydocker
+yay -S lazydocker
 ```
 
 Also it will be a good idea to install [NerdFonts](https://github.com/ryanoasis/nerd-fonts) and/or [JetBrains Mono](https://www.jetbrains.com/lp/mono/)- awesome fonts for developers.
@@ -85,6 +89,9 @@ git clone https://github.com/ryanoasis/nerd-fonts.git && cd nerd-fonts
 for i in DejaVuSansMono Go-Mono Meslo FiraMono Hack UbuntuMono ; do ./install.sh -U "$i" ; done
 # Install to global system path
 for i in DejaVuSansMono Go-Mono Meslo FiraMono Hack UbuntuMono ; do sudo ./install.sh -S "$i" ; done
+
+# Arch Linux Nerd fonts
+sudo pacman -S ttf-jetbrains-mono-nerd ttf-hack-nerd ttf-meslo-nerd ttf-firacode-nerd ttf-go-nerd ttf-ubuntu-mono-nerd
 ```
 
 ### Node.js and required packages
@@ -124,12 +131,10 @@ $ npm update -g
 - `install.sh` without options - install default setup: **Vim** + **Shell functions**
 - `--neovim` option installs **Neovim IDE**
 - `--tmux` option installs **Tmux** config.
-- `--kitty` option installs **Kitty** terminal config to `~/.config/kitty/`
-- `--starship` option installs **Starship** config to `~/.config/starship.toml`.
 
 ```bash
 git clone https://github.com/cyberfantom/.dot-cli.git ~/.dot-cli && cd ~/
-.dot-cli/install.sh [--neovim] [--tmux] [--kitty] [--starship]
+.dot-cli/install.sh [--neovim] [--tmux]
 ```
 
 Next, just login again or run:

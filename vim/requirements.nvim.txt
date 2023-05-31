@@ -1,3 +1,5 @@
 pynvim
 isort
 black
+ruff
+cpplint
