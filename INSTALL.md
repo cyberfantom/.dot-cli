@@ -49,16 +49,6 @@ instructions.
 
 - [Universal Ctags](https://github.com/universal-ctags/ctags)
 
-- [shfmt](https://github.com/mvdan/sh) - A shell scripts format tool
-
-- [shellcheck](https://github.com/koalaman/shellcheck) - A shell script static analysis tool
-
-- [Rust analyzer](https://github.com/rust-analyzer/rust-analyzer) - Rust language server.
-
-- [Lua language server](https://github.com/LuaLS/lua-language-server) - Lua language server.
-
-- [clangd](https://clangd.llvm.org) - C/C++ language server.
-
 - [astyle](https://astyle.sourceforge.net) - A formatter tool for C, C++, C++/CLI, Objective C, C#, and Java.
 
 - [cppcheck](https://github.com/danmar/cppcheck) - C/C++ static analysis tool.
@@ -74,7 +64,7 @@ instructions.
 In Arch Linux these tools are present in the repositories (standard and AUR) so they can be installed using the package manager:
 
 ```bash
-sudo pacman -S ctags shfmt shellcheck rust-analyzer lazygit ripgrep fzf lua-language-server cppcheck clang astyle
+sudo pacman -S ctags lazygit ripgrep fzf cppcheck astyle
 # AUR packages
 yay -S lazydocker
 ```
@@ -111,6 +101,7 @@ nvm install --lts --latest-npm --reinstall-packages-from='lts/*'
 ```
 
 Install required npm packages:
+**DEPRECATED** Latest stack version using Mason installer, the following commands no needed anymore.
 
 ```bash
 # Install npm packages

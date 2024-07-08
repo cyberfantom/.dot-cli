@@ -23,9 +23,44 @@ local plugins = {
         lazy = true
     },
     {
+        'olimorris/onedarkpro.nvim',
+        priority = 1000, -- Ensure it loads first
+        config = function() require('colorscheme').onedarkpro() end,
+    },
+    {
+        'EdenEast/nightfox.nvim',
+        config = function() require('colorscheme').nightfox() end,
+    },
+    {
+        'rebelot/kanagawa.nvim',
+        config = function() require('colorscheme').kanagawa() end,
+    },
+    {
+        'catppuccin/nvim',
+        config = function() require('colorscheme').catppuccin() end,
+        name = 'catppuccin',
+        lazy = true
+    },
+    {
         'nvim-treesitter/nvim-treesitter',
         config = function() require('plugins/treesitter') end,
         build = ':TSUpdate'
+    },
+    {
+        "ThePrimeagen/harpoon",
+        branch = "harpoon2",
+        dependencies = { "nvim-lua/plenary.nvim" },
+        config = function() require('plugins/harpoon') end,
+    },
+    {
+        "williamboman/mason.nvim",
+        cmd = { "Mason", "MasonInstall", "MasonUpdate" },
+        config = function() require("mason").setup() end,
+        dependencies = { "williamboman/mason-lspconfig.nvim", },
+    },
+    {
+        "WhoIsSethDaniel/mason-tool-installer.nvim",
+        config = function() require('plugins/mason-tool-installer') end,
     },
     {
         'neovim/nvim-lspconfig',
@@ -35,10 +70,25 @@ local plugins = {
         lazy = true
     },
     {
+        'nvimdev/lspsaga.nvim',
+        config = function() require('plugins/lsp').lspsaga() end,
+        event = { 'LspAttach', },
+        dependencies = {
+            'nvim-treesitter/nvim-treesitter', -- optional
+            'nvim-tree/nvim-web-devicons',     -- optional
+        }
+    },
+    {
         'jose-elias-alvarez/null-ls.nvim',
         cmd = 'NullLsInfo',
         event = { 'BufReadPre', 'BufNewFile' },
         config = function() require('plugins/lsp').null_ls() end,
+        lazy = true
+    },
+    {
+        'stevearc/conform.nvim',
+        event = { 'BufReadPre', 'BufNewFile' },
+        config = function() require('plugins/lsp').conform() end,
         lazy = true
     },
     {
@@ -93,7 +143,7 @@ local plugins = {
     { 'nvim-lualine/lualine.nvim',           config = function() require('plugins/lualine') end, },
     { 'akinsho/bufferline.nvim',             config = function() require('plugins/bufferline') end, },
     { 'RRethy/vim-illuminate',               config = function() require('plugins/illuminate') end, },
-    { 'lukas-reineke/indent-blankline.nvim', config = function() require('plugins/indent-blankline') end, },
+    { 'lukas-reineke/indent-blankline.nvim', config = function() require('plugins/indent-blankline') end, main = "ibl", },
     { 'mhinz/vim-startify',                  config = function() require('plugins/startify') end, },
     { 'lewis6991/gitsigns.nvim',             config = function() require('plugins/gitsigns') end, },
     { 'danymat/neogen',                      config = function() require('plugins/neogen') end, },
@@ -104,7 +154,7 @@ local plugins = {
     { 'psliwka/vim-smoothie' },
     { 'editorconfig/editorconfig-vim' },
     { 'tpope/vim-surround' },
-    { 'sheerun/vim-polyglot' }
+    -- { 'sheerun/vim-polyglot' }
 
 }
 

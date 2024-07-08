@@ -1,4 +1,23 @@
 local M = {}
+M.servers = {
+    "pyright",
+    "ruff_lsp",
+    "rust_analyzer",
+    "gopls",
+    "tsserver",
+    "bashls",
+    "jsonls",
+    "cssls",
+    "html",
+    "graphql",
+    "vimls",
+    "clangd",
+    "helm_ls",
+    "taplo",
+    -- LSP servers must be configured separately
+    "yamlls",
+    "lua_ls"
+}
 
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
@@ -13,17 +32,17 @@ local on_attach = function(client, bufnr)
     -- Optional open with: "tab split | lua command" or "vsplit | lua command"
     buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
     buf_set_keymap('n', 'gj', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-    buf_set_keymap('n', 'gd', '<cmd>vsplit | lua vim.lsp.buf.definition()<CR>', opts)
-    buf_set_keymap('n', 'gi', '<cmd>vsplit | lua vim.lsp.buf.implementation()<CR>', opts)
+    -- buf_set_keymap('n', 'gd', '<cmd>vsplit | lua vim.lsp.buf.definition()<CR>', opts)
+    -- buf_set_keymap('n', 'gi', '<cmd>vsplit | lua vim.lsp.buf.implementation()<CR>', opts)
     buf_set_keymap('n', 'gs', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
     buf_set_keymap('n', 'ge', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
-    buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+    -- buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.rename()<CR>', opts) -- Lspsaga implementation used
     buf_set_keymap('n', '<space>t', '<cmd>vsplit | lua vim.lsp.buf.type_definition()<CR>', opts)
     buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
     buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
     buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
     buf_set_keymap('n', 'gu', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-    buf_set_keymap('n', '<leader>f', '<cmd>lua vim.lsp.buf.format({async = true})<CR>', opts)
+    -- buf_set_keymap('n', '<leader>f', '<cmd>lua vim.lsp.buf.format({async = true})<CR>', opts)
     buf_set_keymap('n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
 
     -- tsserver specific opts
@@ -32,6 +51,12 @@ local on_attach = function(client, bufnr)
         client.resolved_capabilities.document_formatting = false
         client.resolved_capabilities.document_range_formatting = false
         --buf_set_keymap("n", "<Leader>o", "<CMD>TSServerOrganizeImports<CR>", opts)
+    end
+    -- ruff_lsp specific opts
+    if client.name == "ruff_lsp" then
+        -- disable code format in ruff_lsp
+        client.resolved_capabilities.document_formatting = false
+        client.resolved_capabilities.document_range_formatting = false
     end
 end
 
@@ -58,20 +83,7 @@ function M.lsp()
     local nvim_lsp = require('lspconfig')
     -- Use a loop to conveniently call 'setup' on multiple servers and
     -- map buffer local keybindings when the language server attaches
-    local servers = {
-        'pyright',
-        'rust_analyzer',
-        'gopls',
-        'tsserver',
-        'bashls',
-        'jsonls',
-        'cssls',
-        'html',
-        'graphql',
-        'vimls',
-        'clangd'
-    }
-    for _, lsp in ipairs(servers) do
+    for _, lsp in ipairs(M.servers) do
         nvim_lsp[lsp].setup {
             capabilities = capabilities,
             on_attach = on_attach,
@@ -105,6 +117,9 @@ function M.lsp()
             update_in_insert = true
         }
     )
+
+    -- ruff_lsp settings
+    require 'lspconfig'.ruff_lsp.setup {}
 
     -- yamlls settings
     nvim_lsp.yamlls.setup {
@@ -141,6 +156,42 @@ function M.lsp()
             },
         },
     }
+
+    -- https://github.com/astral-sh/ruff-lsp/issues/384
+    -- This is example how to use pyright alongside ruff-lsp
+    -- Options:
+    -- 1. disable all pyright analysis. Here we're losing pyright type checking (we can use mypy in this case)
+    -- 2. Suppress 1st tag in diagnostics to show only ruff messages (for now some issues with this)
+    -- 3. Disable special diagnostic types in pyright: some of them does not work
+    -- nvim_lsp.pyright.setup {
+    --     -- use second tag for diagnostics
+    --     capabilities = (function()
+    --         local capabilities = vim.lsp.protocol.make_client_capabilities()
+    --         capabilities.textDocument.publishDiagnostics.tagSupport.valueSet = { 2 }
+    --         return capabilities
+    --     end)(),
+    --     settings = {
+    --         pyright = {
+    --             -- Using Ruff's import organizer
+    --             disableOrganizeImports = true,
+    --         },
+    --         python = {
+    --             -- Ignore all files for analysis to exclusively use Ruff for linting
+    --             -- analysis = {
+    --             --     ignore = { '*' },
+    --             -- },
+    --             -- Disable diagnostic for some cases
+    --             diagnosticSeverityOverrides = {
+    --                 -- https://github.com/microsoft/pyright/blob/main/docs/configuration.md#type-check-diagnostics-settings
+    --                 reportUndefinedVariable = "none",
+    --                 reportUnusedImport = "none",
+    --                 reportUnusedClass = "none",
+    --                 reportUnusedFunction = "none",
+    --                 reportDuplicateImport = "none",
+    --             },
+    --         }
+    --     }
+    -- }
 end
 
 -- null-ls settings
@@ -160,7 +211,6 @@ function M.null_ls()
         },
         sources = {
             null_ls.builtins.code_actions.shellcheck,
-            -- null_ls.builtins.diagnostics.shellcheck, -- implemented in bashls
             null_ls.builtins.formatting.shfmt.with({
                 extra_args = { "-i", "4", "-ci", "-bn", "-sr" },
             }),
@@ -171,24 +221,86 @@ function M.null_ls()
             null_ls.builtins.diagnostics.eslint_d,
             null_ls.builtins.code_actions.eslint_d,
             null_ls.builtins.formatting.eslint_d,
-            null_ls.builtins.diagnostics.cppcheck,
+            null_ls.builtins.diagnostics.cppcheck, -- installing to system separately, by hands
             null_ls.builtins.diagnostics.cpplint.with({
                 args = { "--filter=-legal/copyright", "$FILENAME" }
             }),
-            null_ls.builtins.formatting.astyle, -- also try https://uncrustify.sourceforge.net
-            null_ls.builtins.diagnostics.markdownlint.with({
-                extra_args = { "--disable", "MD013", "MD014", "MD034" },
-            }),
-            null_ls.builtins.formatting.black.with({
-                extra_args = { "--line-length", "79" },
-            }),
-            null_ls.builtins.formatting.isort.with({
-                extra_args = { "--profile", "black" },
-            }),
-            null_ls.builtins.diagnostics.ruff.with(ruff_opts),
-            null_ls.builtins.formatting.ruff.with(ruff_opts),
+            null_ls.builtins.formatting.astyle, -- also try https://uncrustify.sourceforge.net -- installing to system separately, by hands
         },
     })
+end
+
+function M.conform()
+    local conform = require("conform")
+    conform.setup({
+        formatters_by_ft = {
+            -- lua = { "stylua" },
+            -- Conform will run multiple formatters sequentially
+            python = { "isort", "black" },
+            markdown = { "markdownlint-cli2", "mdformat" }, -- future add "cbfmt" to list
+            xml = { "xmlformatter" },
+            -- Use a sub-list to run only the first available formatter
+            -- javascript = { { "prettierd", "prettier" } },
+        },
+        formatters = {
+            isort = {
+                -- Change where to find the command
+                command = "isort",
+                -- Adds environment args to the yamlfix formatter
+                prepend_args = { "--profile", "black" },
+            },
+            markdownlint_cli2 = { prepend_args = { "--disable", "MD013", "MD014", "MD034" } },
+            xmlformatter = { command = "xmlformat", args = { "-" }, }
+        }
+    })
+    -- bind conform format key, fallback to lsp
+    vim.keymap.set('n', '<leader>f', function() conform.format({ async = true, lsp_fallback = true }) end)
+end
+
+--Lspsaga setup
+function M.lspsaga()
+    local lspsaga = require('lspsaga')
+    lspsaga.setup({
+        symbol_in_winbar = { enable = false },
+        lightbulb = { enable = false },
+        definition = {
+            keys = {
+                edit = '<C-o>',
+                vsplit = '<C-v>',
+                split = '<C-x>',
+                tabe = '<C-t>',
+                close = '<ESC>'
+            }
+        },
+        rename = {
+            keys = {
+                quit = '<ESC>'
+            }
+        },
+        finder = {
+            keys = {
+                vsplit = '<C-v>',
+                split = '<C-x>',
+                tabe = '<C-t>',
+                close = '<ESC>'
+            }
+        },
+        callhierarchy = {
+            keys = {
+                edit = '<C-o>',
+                vsplit = '<C-v>',
+                split = '<C-x>',
+                tabe = '<C-t>',
+                close = '<ESC>'
+            }
+        },
+    })
+    -- Keymap
+    vim.keymap.set('n', 'gr', '<Cmd>Lspsaga rename ++project<cr>')
+    vim.keymap.set('n', 'gf', '<Cmd>:Lspsaga finder<cr>')
+    vim.keymap.set('n', 'gd', '<Cmd>:Lspsaga peek_definition<cr>')
+    vim.keymap.set('n', 'go', '<Cmd>:Lspsaga outgoing_calls<cr>')
+    vim.keymap.set('n', 'gi', '<Cmd>:Lspsaga incoming_calls<cr>')
 end
 
 return M

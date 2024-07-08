@@ -34,12 +34,11 @@ Extra usage information you can find in [Notes](NOTES.md).
 | **Ctrl+p**                                 | Toggle CtrlP                                  | Normal        | Vim          |
 | **F3**                                     | Toggle maximized/minimized window view        | Normal        | ALL          |
 | **Space**                                  | Insert space in normal mode (after cursor)    | Normal        | ALL          |
-| **Ctrl+i**                                 | Toggle indent lines                           | Normal        | ALL          |
 | **Ctrl+h**                                 | Toggle hidden symbols                         | Normal        | ALL          |
 | **leader+/**                               | Toggle diff mode for splits in current window | Normal        | ALL          |
 | **Ctrl+Arrows**                            | Resize splits                                 | Normal        | ALL          |
-| [**number**] + **n** / **N**               | Insert blank line below/above cursor          | Normal        | ALL          |
-| **leader+d[d]**                            | delete without yanking                        | Normal/Visual | ALL          |
+| \[**number**\] + **leader+Enter**          | Insert blank line(s) below cursor             | Normal        | ALL          |
+| **leader+d\[d\]**                          | delete without yanking                        | Normal/Visual | ALL          |
 | **leader+p**                               | paste without yanking                         | Normal/Visual | ALL          |
 | **cp**                                     | Copy to system buffer                         | Visual        | ALL          |
 | **cv**                                     | Paste from system buffer                      | Normal        | ALL          |
@@ -61,9 +60,12 @@ Extra usage information you can find in [Notes](NOTES.md).
 
 | Keys                                                         | Action                                                                                                   | Mode          |
 | ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- | ------------- |
-| **Ctrl+n**                                                   | Toggle files tree                                                                                        | Normal        |
+| **leader+e**                                                 | Toggle files tree                                                                                        | Normal        |
+| **leader+a**                                                 | Add file to harpoon                                                                                      | Normal        |
+| **Ctrl+e**                                                   | Toggle harpoon menu                                                                                      | Normal        |
+| **Tab** or **Ctrl+i**                                        | Open harpoon in Telescope                                                                                | Normal        |
 | **Enter** in quickfix/location list                          | Open usage in previous buffer                                                                            | Normal        |
-| **Ctrl+v / x / t** in quickfix/location/Files tree/Telescope | Open in v: vertical split, x: horizontal split, t: tab                                                   | Normal        |
+| **Ctrl+v / x / t** in quickfix/location/Files tree/Telescope/Lspsaga | Open in v: vertical split, x: horizontal split, t: tab                                                   | Normal        |
 | **leader+g**                                                 | Open Lazygit in vertical split                                                                           | Normal        |
 | **leader+gf**                                                | Open Lazygit maximized                                                                                   | Normal        |
 | **leader+c**                                                 | Open Lazydocker in vertical split                                                                        | Normal        |
@@ -98,16 +100,18 @@ Extra usage information you can find in [Notes](NOTES.md).
 
 | Keys                | Action                                                 | Mode   |
 | ------------------- | ------------------------------------------------------ | ------ |
-| **F8**              | Toggle symbols bar                                     | Normal |
+| **leader+o**        | Toggle symbols bar                                     | Normal |
 | **leader+s**        | Insert docstring                                       | Normal |
 | **leader+f**        | Format code                                            | Normal |
 | **leader+ca**       | Code actions                                           | Normal |
 | **Ctrl+n**          | Toggle autocompletion                                  | Insert |
 | **gj**              | Go to declaration                                      | Normal |
 | **gd**              | Go to definition (opens in tab)                        | Normal |
-| **gi**              | Go to implementation                                   | Normal |
+| **gi**              | Lspsaga incoming calls                                 | Normal |
+| **go**              | Lspsaga outgoing calls                                 | Normal |
 | **gu**              | Find usages (quickfix list)                            | Normal |
 | **ge**              | Show line diafnostics                                  | Normal |
+| **gf**              | Lspsaga finder (references+implementations)            | Normal |
 | **gr**              | Rename under cursor. **Enter** - execute, **q** - quit | Normal |
 | **gs**              | Show signature help                                    | Normal |
 | **K**               | Show docstring                                         | Normal |
@@ -116,6 +120,7 @@ Extra usage information you can find in [Notes](NOTES.md).
 | **space-wr**        | Remove workspace folder                                | Normal |
 | **space-wl**        | List workspace folders                                 | Normal |
 | **Ctrl-f / Ctrl-u** | Scroll over menu items in most cases                   | Normal |
+| **\[w**              | Lspsaga windows shuttle                                | Normal |
 
 ### Tmux
 

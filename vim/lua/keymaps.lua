@@ -24,3 +24,7 @@ vim.api.nvim_set_keymap("n", "<leader>gf", ":lcd %:p:h<CR>:vsplit <Bar> :Maximiz
 vim.api.nvim_set_keymap("n", "<leader>c", ":vsplit <Bar> term lazydocker<CR>", opts)
 -- vertical split maximized
 vim.api.nvim_set_keymap("n", "<leader>cf", ":vsplit <Bar> :MaximizerToggle<CR> :term lazydocker<CR>", opts)
+
+-- DAP
+vim.api.nvim_set_keymap("n", "<leader>db", ":DapToggleBreakpoint <CR>", opts)
+vim.api.nvim_set_keymap("n", "<leader>dpr", "<cmd> lua require('dap-python').test_method()<CR>", opts)

@@ -22,7 +22,7 @@ silent! set termguicolors " or try notermguicolors
 set background=dark "" light | dark
 set mouse-=a
 "" Set document rulers and disable for specific filetypes
-let &colorcolumn="80,".join(range(120,999),",")
+let &colorcolumn="88,".join(range(128,999),",")
 au FileType qf setlocal colorcolumn=
 au FileType Trouble setlocal colorcolumn=
 set modifiable
@@ -62,8 +62,8 @@ endfunction
 nnoremap <silent> <leader>/ :call DiffToggle()<CR>
 
 " Add new line(s) in normal mode
-nnoremap n o<Esc>
-nnoremap N O<Esc>j
+nnoremap <leader><Enter> o<Esc>
+" nnoremap <leader><Enter> O<Esc>j " add lines upper
 
 " delete without yanking
 nnoremap <leader>d "_d

@@ -61,7 +61,7 @@ require 'nvim-tree'.setup {
     },
     view                               = {
         width = 42,
-        side = 'left',
+        side = 'right',
         adaptive_size = false,
     },
     renderer                           = {
@@ -137,7 +137,7 @@ vim.api.nvim_create_autocmd("BufEnter", {
 })
 
 -- Keymap
-vim.keymap.set('n', '<C-n>', api.tree.toggle)
+vim.keymap.set('n', '<leader>e', api.tree.toggle)
 
 -- Fix highlight
 -- vim.api.nvim_set_hl(0, "NvimTreeIndentMarker", { fg = "#555756", })

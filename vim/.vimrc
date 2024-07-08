@@ -67,7 +67,6 @@ map <silent> <leader>tv :lcd %:p:h<CR>:vert term ++close<CR>
 
 " Indent Line
 let g:indentLine_char = '│' " ASCII 179
-map <silent> <C-i> :IndentLinesToggle<CR>
 let g:indentLine_setConceal = 2
 " default ''.
 " n for Normal mode
