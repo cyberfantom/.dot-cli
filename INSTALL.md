@@ -38,7 +38,7 @@ When you will have installed a right versions of **Tmux** and **Vim/Neovim** , j
 - **Arch Linux**
 
   ```bash
-  $ sudo pacman -S git curl python-pip xsel mc jq vim neovim tmux
+  sudo pacman -S git curl python-pip xsel mc jq vim neovim tmux
   ```
 
 ### Install required tools
@@ -76,12 +76,12 @@ Also it will be a good idea to install [NerdFonts](https://github.com/ryanoasis/
 git clone https://github.com/ryanoasis/nerd-fonts.git && cd nerd-fonts
 
 # Install for user
-for i in DejaVuSansMono Go-Mono Meslo FiraMono Hack UbuntuMono ; do ./install.sh -U "$i" ; done
+for i in AnonymousPro Inconsolata Iosevka DejaVuSansMono Go-Mono Meslo FiraCode Hack UbuntuMono JetBrainsMono SourceCodePro Monaspace ; do ./install.sh -U "$i" ; done
 # Install to global system path
-for i in DejaVuSansMono Go-Mono Meslo FiraMono Hack UbuntuMono ; do sudo ./install.sh -S "$i" ; done
+for i in AnonymousPro Inconsolata Iosevka DejaVuSansMono Go-Mono Meslo FiraCode Hack UbuntuMono JetBrainsMono SourceCodePro Monaspace ; do sudo ./install.sh -S "$i" ; done
 
 # Arch Linux Nerd fonts
-sudo pacman -S ttf-jetbrains-mono-nerd ttf-hack-nerd ttf-meslo-nerd ttf-firacode-nerd ttf-go-nerd ttf-ubuntu-mono-nerd
+sudo pacman -S ttf-jetbrains-mono-nerd ttf-hack-nerd ttf-meslo-nerd ttf-firacode-nerd ttf-go-nerd ttf-ubuntu-mono-nerd ttf-inconsolata-nerd ttf-anonymouspro-nerd ttf-iosevka-nerd ttf-dejavu-nerd ttf-sourcecodepro-nerd otf-monaspace-nerd
 ```
 
 ### Node.js and required packages
@@ -143,14 +143,14 @@ Next, just login again or run:
 - **DEB-based distros**
 
   ```bash
-  $ sudo apt install build-essential python3-dev stow
+  sudo apt install build-essential python3-dev stow
   ```
 
 - **RPM-based distros**
 
   ```bash
-  $ sudo yum group install "Development Tools"
-  $ sudo yum install python3-devel stow
+  sudo yum group install "Development Tools"
+  sudo yum install python3-devel stow
   ```
 
 Install required packages from [Neovim Build prerequisites](https://github.com/neovim/neovim/wiki/Building-Neovim#build-prerequisites)
