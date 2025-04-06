@@ -1,10 +1,11 @@
 local M = {}
 M.servers = {
     "pyright",
-    "ruff_lsp",
+    "ruff",
     "rust_analyzer",
     "gopls",
-    "tsserver",
+    --"tsserver",
+    "ts_ls",
     "bashls",
     "jsonls",
     "cssls",
@@ -14,6 +15,8 @@ M.servers = {
     "clangd",
     "helm_ls",
     "taplo",
+    "ansiblels",
+    "terraformls",
     -- LSP servers must be configured separately
     "yamlls",
     "lua_ls"
@@ -46,18 +49,19 @@ local on_attach = function(client, bufnr)
     buf_set_keymap('n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
 
     -- tsserver specific opts
-    if client.name == "tsserver" then
-        -- disable code format in tsserver
-        client.resolved_capabilities.document_formatting = false
-        client.resolved_capabilities.document_range_formatting = false
-        --buf_set_keymap("n", "<Leader>o", "<CMD>TSServerOrganizeImports<CR>", opts)
-    end
+    -- if client.name == "tsserver" then
+    -- if client.name == "ts_ls" then
+    --     -- disable code format in tsserver
+    --     client.resolved_capabilities.document_formatting = false
+    --     client.resolved_capabilities.document_range_formatting = false
+    --     --buf_set_keymap("n", "<Leader>o", "<CMD>TSServerOrganizeImports<CR>", opts)
+    -- end
     -- ruff_lsp specific opts
-    if client.name == "ruff_lsp" then
-        -- disable code format in ruff_lsp
-        client.resolved_capabilities.document_formatting = false
-        client.resolved_capabilities.document_range_formatting = false
-    end
+    -- if client.name == "ruff" then
+    --     -- disable code format in ruff_lsp
+    --     client.resolved_capabilities.document_formatting = false
+    --     client.resolved_capabilities.document_range_formatting = false
+    -- end
 end
 
 -- Disable LSP on some filetypes
@@ -117,9 +121,6 @@ function M.lsp()
             update_in_insert = true
         }
     )
-
-    -- ruff_lsp settings
-    require 'lspconfig'.ruff_lsp.setup {}
 
     -- yamlls settings
     nvim_lsp.yamlls.setup {
@@ -195,38 +196,69 @@ function M.lsp()
 end
 
 -- null-ls settings
-function M.null_ls()
-    local null_ls = require("null-ls")
-    local ruff_opts = {
-        extra_args = { "--ignore", "E501" },
+-- function M.null_ls()
+--     local null_ls = require("null-ls")
+--     local ruff_opts = {
+--         extra_args = { "--ignore", "E501" },
+--     }
+--     null_ls.setup({
+--         on_attach = on_attach,
+--         diagnostic_config = {
+--             underline = true,
+--             virtual_text = false,
+--             signs = true,
+--             update_in_insert = true,
+--             severity_sort = true,
+--         },
+--         sources = {
+--             null_ls.builtins.code_actions.shellcheck,
+--             null_ls.builtins.formatting.shfmt.with({
+--                 extra_args = { "-i", "4", "-ci", "-bn", "-sr" },
+--             }),
+--             null_ls.builtins.formatting.prettier.with({
+--                 -- exclude filetypes, use eslint with prettier plugin for this
+--                 disabled_filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
+--             }),
+--             null_ls.builtins.diagnostics.eslint_d,
+--             null_ls.builtins.code_actions.eslint_d,
+--             null_ls.builtins.formatting.eslint_d,
+--             null_ls.builtins.diagnostics.cppcheck, -- installing to system separately, by hands
+--             null_ls.builtins.diagnostics.cpplint.with({
+--                 args = { "--filter=-legal/copyright", "$FILENAME" }
+--             }),
+--             null_ls.builtins.formatting.astyle, -- also try https://uncrustify.sourceforge.net -- installing to system separately, by hands
+--         },
+--     })
+-- end
+
+function M.nvim_lint()
+    local lint = require("lint")
+    lint.linters_by_ft = {
+        javascript = { "eslint_d" },
+        typescript = { "eslint_d" },
+        javascriptreact = { "eslint_d" },
+        typescriptreact = { "eslint_d" },
+        svelte = { "eslint_d" },
+        c = { "cpplint" },
+        cpp = { "cpplint" },
+        markdown = { "markdownlint-cli2" },
+        sh = { "shellcheck" },
+        bash = { "shellcheck" }
     }
-    null_ls.setup({
-        on_attach = on_attach,
-        diagnostic_config = {
-            underline = true,
-            virtual_text = false,
-            signs = true,
-            update_in_insert = true,
-            severity_sort = true,
-        },
-        sources = {
-            null_ls.builtins.code_actions.shellcheck,
-            null_ls.builtins.formatting.shfmt.with({
-                extra_args = { "-i", "4", "-ci", "-bn", "-sr" },
-            }),
-            null_ls.builtins.formatting.prettier.with({
-                -- exclude filetypes, use eslint with prettier plugin for this
-                disabled_filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
-            }),
-            null_ls.builtins.diagnostics.eslint_d,
-            null_ls.builtins.code_actions.eslint_d,
-            null_ls.builtins.formatting.eslint_d,
-            null_ls.builtins.diagnostics.cppcheck, -- installing to system separately, by hands
-            null_ls.builtins.diagnostics.cpplint.with({
-                args = { "--filter=-legal/copyright", "$FILENAME" }
-            }),
-            null_ls.builtins.formatting.astyle, -- also try https://uncrustify.sourceforge.net -- installing to system separately, by hands
-        },
+
+    -- cpplint options
+    lint.linters.cpplint.args = { "--filter=-legal/copyright", "$FILENAME" }
+    -- markdownlint_cli2 options
+    local markdownlint_cli2 = require("lint/linters/markdownlint-cli2")
+    markdownlint_cli2.args = { "--disable", "MD013", "MD014", "MD034" }
+
+    local lint_augroup = vim.api.nvim_create_augroup("lint", { clear = true })
+
+    vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave" }, {
+        group = lint_augroup,
+        callback = function()
+            lint.try_lint()
+        end,
     })
 end
 
@@ -240,7 +272,20 @@ function M.conform()
             markdown = { "markdownlint-cli2", "mdformat" }, -- future add "cbfmt" to list
             xml = { "xmlformatter" },
             -- Use a sub-list to run only the first available formatter
-            -- javascript = { { "prettierd", "prettier" } },
+            javascript = { "prettierd", "prettier", stop_after_first = true },
+            typescript = { "prettierd", "prettier", stop_after_first = true },
+            typescriptreact = { "prettierd", "prettier", stop_after_first = true },
+            javascriptreact = { "prettierd", "prettier", stop_after_first = true },
+            svelte = { "prettierd", "prettier", stop_after_first = true },
+            css = { "prettierd", "prettier", stop_after_first = true },
+            html = { "prettierd", "prettier", stop_after_first = true },
+            json = { "prettierd", "prettier", stop_after_first = true },
+            yaml = { "prettierd", "prettier", stop_after_first = true },
+            -- markdown = { "prettierd", "prettier" , stop_after_first = true },
+            graphql = { "prettierd", "prettier", stop_after_first = true },
+            bash = { "shfmt" },
+            zsh = { "shfmt" },
+            sh = { "shfmt" },
         },
         formatters = {
             isort = {
@@ -250,7 +295,11 @@ function M.conform()
                 prepend_args = { "--profile", "black" },
             },
             markdownlint_cli2 = { prepend_args = { "--disable", "MD013", "MD014", "MD034" } },
-            xmlformatter = { command = "xmlformat", args = { "-" }, }
+            xmlformatter = { command = "xmlformat", args = { "-" }, },
+            shfmt = {
+                command = "shfmt",
+                prepend_args = { "-i", "4", "-ci", "-bn", "-sr", "-ln", "bash" },
+            },
         }
     })
     -- bind conform format key, fallback to lsp

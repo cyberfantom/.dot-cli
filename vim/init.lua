@@ -1,4 +1,6 @@
 package.path = os.getenv('HOME') .. "/.dot-cli/vim/lua/?.lua;" .. package.path
+-- disable deprecated messages
+-- vim.deprecate = function() end
 -- Options (loads before plugins)
 require('options')
 -- Autocmds

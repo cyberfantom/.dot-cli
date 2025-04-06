@@ -78,11 +78,17 @@ local plugins = {
             'nvim-tree/nvim-web-devicons',     -- optional
         }
     },
+    -- {
+    --     'jose-elias-alvarez/null-ls.nvim',
+    --     cmd = 'NullLsInfo',
+    --     event = { 'BufReadPre', 'BufNewFile' },
+    --     config = function() require('plugins/lsp').null_ls() end,
+    --     lazy = true
+    -- },
     {
-        'jose-elias-alvarez/null-ls.nvim',
-        cmd = 'NullLsInfo',
+        'mfussenegger/nvim-lint',
         event = { 'BufReadPre', 'BufNewFile' },
-        config = function() require('plugins/lsp').null_ls() end,
+        config = function() require('plugins/lsp').nvim_lint() end,
         lazy = true
     },
     {
