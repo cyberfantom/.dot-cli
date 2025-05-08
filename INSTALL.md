@@ -41,6 +41,13 @@ When you will have installed a right versions of **Tmux** and **Vim/Neovim** , j
   sudo pacman -S git curl python-pip xsel mc jq vim neovim tmux
   ```
 
+- **MacOS**
+
+  ```bash
+  brew install git curl python xsel mc jq vim neovim tmux
+  python3 -m pip install --upgrade pip
+  ```
+
 ### Install required tools
 
 To get all features of Neovim IDE, the following tools must be installed.
@@ -61,12 +68,16 @@ instructions.
 
 - [FZF](https://github.com/junegunn/fzf) - Command-line fuzzy finder.
 
-In Arch Linux these tools are present in the repositories (standard and AUR) so they can be installed using the package manager:
+In Arch Linux and MacOS these tools are present in the repositories so they can be installed using the package manager:
 
 ```bash
+# Arch Linux
 sudo pacman -S ctags lazygit ripgrep fzf cppcheck astyle
 # AUR packages
 yay -S lazydocker
+
+# MacOS
+brew install ctags astyle cppcheck lazygit lazydocker ripgrep fzf
 ```
 
 Also it will be a good idea to install [NerdFonts](https://github.com/ryanoasis/nerd-fonts) and/or [JetBrains Mono](https://www.jetbrains.com/lp/mono/)- awesome fonts for developers.
@@ -82,6 +93,35 @@ for i in AnonymousPro Inconsolata Iosevka DejaVuSansMono Go-Mono Meslo FiraCode 
 
 # Arch Linux Nerd fonts
 sudo pacman -S ttf-jetbrains-mono-nerd ttf-hack-nerd ttf-meslo-nerd ttf-firacode-nerd ttf-go-nerd ttf-ubuntu-mono-nerd ttf-inconsolata-nerd ttf-anonymouspro-nerd ttf-iosevka-nerd ttf-dejavu-nerd ttf-sourcecodepro-nerd otf-monaspace-nerd
+
+# MacOS Nerd Fonts
+fonts_list=(
+  font-fira-mono-nerd-font
+  font-inconsolata-go-nerd-font
+  font-inconsolata-lgc-nerd-font
+  font-inconsolata-nerd-font
+  font-monofur-nerd-font
+  font-ubuntu-mono-nerd-font
+  font-anonymice-nerd-font
+  font-caskaydia-cove-nerd-font
+  font-dejavu-sans-mono-nerd-font
+  font-droid-sans-mono-nerd-font
+  font-fira-code-nerd-font
+  font-go-mono-nerd-font
+  font-hack-nerd-font
+  font-iosevka-nerd-font
+  font-jetbrains-mono-nerd-font
+  font-liberation-nerd-font
+  font-meslo-lg-nerd-font
+  font-monoid-nerd-font
+  font-mononoki-nerd-font
+  font-noto-nerd-font
+  font-roboto-mono-nerd-font
+  font-sauce-code-pro-nerd-font
+  font-terminess-ttf-nerd-font
+  font-ubuntu-nerd-font
+)
+for font in "${fonts_list[@]}";do brew install --cask "$font"; done
 ```
 
 ### Node.js and required packages
@@ -91,7 +131,7 @@ Neovim IDE requires Node. If you don't have installed Node, just install with [N
 ```bash
 # check latest NVM version
 $ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
-$ source ~/.profile && source ~/.bashrc
+$ source ~/.profile && source ~/.bashrc # or ~/.zprofile and ~/.zshrc for zsh
 $ nvm install --lts --latest-npm
 
 # Get help, uninstall, upgrade
@@ -131,10 +171,11 @@ git clone https://github.com/cyberfantom/.dot-cli.git ~/.dot-cli && cd ~/
 Next, just login again or run:
 
 ```bash
-. ~/.bashrc
+. ~/.bashrc # for bash
+. ~/.zshrc # for zsh
 ```
 
----
+______________________________________________________________________
 
 ## Build Guides
 

@@ -1,6 +1,6 @@
 # .dot-cli
 
-This environment has been made mostly for myself for every day work in the Linux command line. Contains pre-configured Vim, Neovim IDE, Shell functions and Tmux.
+This environment has been made mostly for myself for every day work in the Linux and MacOS command line. Contains pre-configured Vim, Neovim IDE, Shell functions and Tmux.
 
 - **Vim**.
   Running with regular command `vim` and using a default file `~/.vimrc`. Useful for fast text edit or deploy to remote servers with minimal requirements.

@@ -7,6 +7,11 @@ SCRIPT_PATH="$(
 NEOVIM=0
 TMUX=0
 
+# default shell is bash
+SHELL_FILE="$HOME/.bashrc"
+# detect if shell is zsh
+if [ -n "$ZSH_VERSION" ]; then SHELL_FILE="$HOME/.zshrc" ; fi
+
 for arg in "$@"; do
     case $arg in
         --neovim)
@@ -63,18 +68,18 @@ if [ ${TMUX} -eq 1 ]; then
 fi
 
 # Path and Term environment
-update_file 'export PATH=$PATH:$HOME/.local/bin' ~/.bashrc
-update_file 'export TERM=xterm-256color' ~/.bashrc
+update_file 'export PATH=$PATH:$HOME/.local/bin' "$SHELL_FILE"
+update_file 'export TERM=xterm-256color' "$SHELL_FILE"
 
 # Shell functions
-update_file 'source '"${SCRIPT_PATH}"'/shell/functions' ~/.bashrc
+update_file 'source '"${SCRIPT_PATH}"'/shell/functions' "$SHELL_FILE"
 
 # Reload daemons and configs
 if [ ${TMUX} -eq 1 ]; then
     $(which tmux) kill-server
     rm -rf /tmp/tmux-${UID}/
 fi
-source ~/.bashrc
-echo -e "\nINSTALLATION COMPLETE"
+source "$SHELL_FILE"
+echo "INSTALLATION COMPLETE"
 
 exit 0
