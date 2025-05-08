@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env sh
 
 SCRIPT_PATH="$(
     cd "$(dirname "$0")"
@@ -7,10 +7,16 @@ SCRIPT_PATH="$(
 NEOVIM=0
 TMUX=0
 
-# default shell is bash
-SHELL_FILE="$HOME/.bashrc"
-# detect if shell is zsh
-if [ -n "$ZSH_VERSION" ]; then SHELL_FILE="$HOME/.zshrc" ; fi
+# Detect shell
+if [ -n "$($SHELL -c 'echo $ZSH_VERSION')" ]; then
+    SHELL_FILE="$HOME/.zshrc"
+elif [ -n "$($SHELL -c 'echo $BASH_VERSION')" ]; then
+    SHELL_FILE="$HOME/.bashrc"
+else
+    echo "Not supported shell"
+    exit 1
+fi
+echo "Shell file is $SHELL_FILE"
 
 for arg in "$@"; do
     case $arg in
@@ -26,7 +32,7 @@ for arg in "$@"; do
 done
 
 # Add string to file if not exists
-function update_file() {
+update_file() {
     # $1 - string
     # $2 - file
     if ! grep -Fxq "$1" "$2"; then
@@ -36,7 +42,7 @@ function update_file() {
 
 # Install neovim requirements
 if [ ${NEOVIM} -eq 1 ]; then
-    pip3 install --user --upgrade -r "${SCRIPT_PATH}/vim/requirements.nvim.txt"
+    $(which python3) -m pip install --break-system-packages --user --upgrade -r "${SCRIPT_PATH}/vim/requirements.nvim.txt"
 fi
 
 # Clean previous Vim installation and install Vim-plug
@@ -79,7 +85,6 @@ if [ ${TMUX} -eq 1 ]; then
     $(which tmux) kill-server
     rm -rf /tmp/tmux-${UID}/
 fi
-source "$SHELL_FILE"
 echo "INSTALLATION COMPLETE"
 
 exit 0
