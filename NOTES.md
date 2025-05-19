@@ -62,4 +62,4 @@ Check the plugin "readme" to get more info.
 
 ## Local user overrides for Vim and Neovim config
 
-Files `~/.dot-vim.vim` and `~/.dot-nvim.vim` are used to override the global settings of Vim and Neovim.
+Files `~/.dotclinvim` and `~/.dotclinvim.vim` are used to override the global settings of Vim and Neovim.

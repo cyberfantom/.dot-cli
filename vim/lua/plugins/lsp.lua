@@ -103,6 +103,8 @@ function M.lsp()
                         "requirements.txt",
                         "Cargo.toml",
                         "rust-project.json",
+                        "ansible.cfg",
+                        ".ansible-lint",
                         ".git/")(fname)
                     or nvim_lsp.util.path.dirname(fname);
             end,

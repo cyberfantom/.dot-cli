@@ -160,6 +160,7 @@ local plugins = {
     { 'psliwka/vim-smoothie' },
     { 'editorconfig/editorconfig-vim' },
     { 'tpope/vim-surround' },
+    { 'mfussenegger/nvim-ansible' }, -- recognize ansible files and set filetype to yaml.ansible
     -- { 'sheerun/vim-polyglot' }
 
 }
