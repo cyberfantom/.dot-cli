@@ -36,14 +36,15 @@ end
 
 require 'nvim-tree'.setup {
     on_attach                          = on_attach,
-    hijack_cursor                      = false,
+    hijack_cursor                      = false, -- position on first file sign
     hijack_unnamed_buffer_when_opening = false,
     disable_netrw                      = false,
     hijack_netrw                       = false,
     update_cwd                         = false,
     respect_buf_cwd                    = false,
+    -- jump or not jump to file in tree when buffer focused
     update_focused_file                = {
-        enable = true,
+        enable = false,
     },
     modified                           = {
         enable = true,
@@ -70,6 +71,7 @@ require 'nvim-tree'.setup {
         highlight_git = true,
         highlight_opened_files = "name",
         root_folder_modifier = ":~",
+        hidden_display = "simple",
         indent_markers = {
             enable = true,
             icons = {
