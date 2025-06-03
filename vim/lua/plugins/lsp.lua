@@ -128,6 +128,7 @@ function M.lsp()
     nvim_lsp.yamlls.setup {
         capabilities = capabilities,
         on_attach = on_attach,
+        filetypes = { "yaml", "yaml.docker-compose", "yaml.gitlab", "yaml.helm-values" },
         settings = {
             yaml = {
                 format = {
@@ -159,6 +160,12 @@ function M.lsp()
             },
         },
     }
+
+    -- nvim_lsp.pyright.setup {
+    --     capabilities = capabilities,
+    --     on_attach = on_attach,
+    --     filetypes = { "python", "yaml.ansible" }
+    -- }
 
     -- https://github.com/astral-sh/ruff-lsp/issues/384
     -- This is example how to use pyright alongside ruff-lsp

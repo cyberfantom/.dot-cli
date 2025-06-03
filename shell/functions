@@ -54,6 +54,34 @@ funclist() {
     awk '{ if ($1 ~ /^###DOC:/) print $0 }' $SHELL_FUNC_PATH | sed 's/###DOC: //'
 }
 
+###DOC: findup - find in parent directories, uses "find". Example findup -name ".venv" -type d
+findup() {
+    local path=$(pwd)
+    local result
+    while [[ "$path" != / ]]; do
+        result=$(find "$path" -maxdepth 1 -mindepth 1 "$@")
+        path="$(readlink -f "$path"/..)"
+        if [ -n "$result" ]; then
+            echo $result
+            return
+        fi
+    done
+}
+
+###DOC: fdup - find in parent directories, uses "fd". Example fdup -g ".venv" -t d
+fdup() {
+    local path=$(pwd)
+    local result
+    while [[ "$path" != / ]]; do
+        result=$(fd --exact-depth=1 -H --no-ignore --absolute-path "$@" "$path")
+        path="$(readlink -f "$path"/..)"
+        if [ -n "$result" ]; then
+            echo $result
+            return
+        fi
+    done
+}
+
 # SSH tools
 
 # Print info of given ssh host

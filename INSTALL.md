@@ -68,16 +68,18 @@ instructions.
 
 - [FZF](https://github.com/junegunn/fzf) - Command-line fuzzy finder.
 
+- [FD](https://github.com/sharkdp/fd) - A simple, fast and user-friendly alternative to 'find'.
+
 In Arch Linux and MacOS these tools are present in the repositories so they can be installed using the package manager:
 
 ```bash
 # Arch Linux
-sudo pacman -S ctags lazygit ripgrep fzf cppcheck astyle
+sudo pacman -S ctags lazygit ripgrep fzf cppcheck astyle fd
 # AUR packages
 yay -S lazydocker
 
 # MacOS
-brew install ctags astyle cppcheck lazygit lazydocker ripgrep fzf
+brew install ctags astyle cppcheck lazygit lazydocker ripgrep fzf fd
 ```
 
 Also it will be a good idea to install [NerdFonts](https://github.com/ryanoasis/nerd-fonts) and/or [JetBrains Mono](https://www.jetbrains.com/lp/mono/)- awesome fonts for developers.

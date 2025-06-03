@@ -57,7 +57,7 @@ require 'nvim-tree'.setup {
         },
     },
     filters                            = {
-        custom = { '.git$', 'node_modules', '.pyc$', '.pyo$', '.egg-info$', '__pycache__', '.venv', 'venv' },
+        custom = { '.git$', 'node_modules', '.pyc$', '.pyo$', '.egg-info$', '__pycache__', '.venv$', 'venv$' },
         dotfiles = false,
     },
     view                               = {
@@ -140,6 +140,8 @@ vim.api.nvim_create_autocmd("BufEnter", {
 
 -- Keymap
 vim.keymap.set('n', '<leader>e', api.tree.toggle)
+vim.keymap.set('n', '<leader>ef', function() api.tree.find_file({ open = true, focus = true }) end)
+vim.keymap.set('n', '<leader>ec', function() api.tree.collapse_all(false) end)
 
 -- Fix highlight
 -- vim.api.nvim_set_hl(0, "NvimTreeIndentMarker", { fg = "#555756", })

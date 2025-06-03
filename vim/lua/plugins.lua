@@ -129,6 +129,13 @@ local plugins = {
         -- cmd = { "NvimTreeToggle", "NvimTreeOpen", "NvimTreeFocus", "NvimTreeFindFileToggle" },
     },
     {
+        'linux-cultist/venv-selector.nvim',
+        dependencies = { 'neovim/nvim-lspconfig', 'nvim-telescope/telescope.nvim' },
+        branch = "regexp",
+        lazy = false,
+        config = function() require('plugins/venv-selector') end,
+    },
+    {
         'iamcco/markdown-preview.nvim',
         ft = { 'markdown' },
         build = function() vim.fn["mkdp#util#install"]() end,
