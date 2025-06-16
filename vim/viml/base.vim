@@ -8,7 +8,8 @@ set number
 set showmatch
 set noruler
 set title
-set shortmess=aoOtI
+" set shortmess=aoOtI
+set shortmess+=
 set noshowcmd
 set cmdheight=1
 set nobackup

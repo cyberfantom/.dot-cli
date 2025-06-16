@@ -12,7 +12,9 @@ local tools = {
     "shfmt",
     "shellcheck",
     "cbfmt",
-    "xmlformatter"
+    "xmlformatter",
+    "yamllint",
+    "ansible-lint"
 }
 
 local function table_merge(t1, t2)

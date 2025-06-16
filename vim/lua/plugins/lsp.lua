@@ -128,7 +128,7 @@ function M.lsp()
     nvim_lsp.yamlls.setup {
         capabilities = capabilities,
         on_attach = on_attach,
-        filetypes = { "yaml", "yaml.docker-compose", "yaml.gitlab", "yaml.helm-values" },
+        filetypes = { "yaml", "yaml.docker-compose", "yaml.gitlab", "yaml.helm-values", "yaml.ansible" },
         settings = {
             yaml = {
                 format = {
@@ -252,7 +252,9 @@ function M.nvim_lint()
         cpp = { "cpplint" },
         markdown = { "markdownlint-cli2" },
         sh = { "shellcheck" },
-        bash = { "shellcheck" }
+        bash = { "shellcheck" },
+        yaml = { "yamllint" },
+        ansible = { "ansible_lint" }
     }
 
     -- cpplint options
